@@ -1,8 +1,4 @@
-import { Fragment, useState } from 'react'
-import { Dialog, Disclosure, Transition } from '@headlessui/react'
-import { XIcon } from '@heroicons/react/outline'
-import { ChevronDownIcon } from '@heroicons/react/solid'
-import Breadcrumb from './Breadcrumb'
+import { useEffect, useState } from 'react'
 import MobileMenu from './MobileMenu'
 import NavigationBar from './NavigationBar'
 
@@ -135,13 +131,29 @@ const navigation = {
 		{ name: 'Stores', href: '#' }
 	]
 }
-const breadcrumbs = [{ id: 1, name: 'Men', href: '#' }]
 
 const classNames = (...classes) => {
 	return classes.filter(Boolean).join(' ')
 }
 
-const Navigation = () => {
+const Navigation = ({ accessToken }) => {
+	useEffect(() => {
+		const fetchUserData = async(accessToken) => {
+			const result = await fetch('http://localhost:3020/users/', {
+				headers: {
+					'authorization': 'Bearer '+ accessToken
+				}
+			})
+			console.log(result)
+			return  result
+		}
+		fetchUserData(accessToken)
+	}, [accessToken])
+
+	useEffect(() => {
+		console.log(document.cookie)
+	}, [])
+
 	const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
 
 	const openMobileMenu = () => {
@@ -166,7 +178,6 @@ const Navigation = () => {
 				classNames={classNames}
 				navigation={navigation}
 			/>
-			<Breadcrumb breadcrumbs={breadcrumbs} />
 		</div>
 	)
 }

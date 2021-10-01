@@ -1,25 +1,49 @@
-import logo from './logo.svg';
-import './App.css';
+import { Switch, Route, Link } from 'react-router-dom'
+import Navigation from './navigation/Navigation'
+import Storefront from './storefront/Storefront'
+import Footer from './Footer'
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+const footerNavigation = {
+  shop: [
+    { name: 'Bags', href: '#' },
+    { name: 'Tees', href: '#' },
+    { name: 'Objects', href: '#' },
+    { name: 'Home Goods', href: '#' },
+    { name: 'Accessories', href: '#' },
+  ],
+  company: [
+    { name: 'Who we are', href: '#' },
+    { name: 'Sustainability', href: '#' },
+    { name: 'Press', href: '#' },
+    { name: 'Careers', href: '#' },
+    { name: 'Terms & Conditions', href: '#' },
+    { name: 'Privacy', href: '#' },
+  ],
+  account: [
+    { name: 'Manage Account', href: '#' },
+    { name: 'Returns & Exchanges', href: '#' },
+    { name: 'Redeem a Gift Card', href: '#' },
+  ],
+  connect: [
+    { name: 'Contact Us', href: '#' },
+    { name: 'Twitter', href: '#' },
+    { name: 'Instagram', href: '#' },
+    { name: 'Pinterest', href: '#' },
+  ],
 }
 
-export default App;
+const App = () => {
+	return (
+		<>
+			<Navigation />
+      <Switch>
+        <Route path="/">
+          <Storefront />
+        </Route>
+      </Switch>
+			<Footer footerNavigation={footerNavigation} />
+		</>
+	)
+}
+
+export default App

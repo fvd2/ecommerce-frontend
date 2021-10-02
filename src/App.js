@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useCallback } from 'react'
 import { Switch, Route } from 'react-router-dom'
 import Navigation from './navigation/Navigation'
 import Storefront from './storefront/Storefront'
@@ -9,6 +9,8 @@ import Checkout from './order/Checkout'
 import OrderSummary from './order/OrderSummary'
 import Signin from './account/Signin'
 import Cart from './Cart'
+import Register from './account/Register'
+import Account from './account/Account'
 
 const footerNavigation = {
 	shop: [
@@ -40,35 +42,35 @@ const footerNavigation = {
 }
 
 const App = () => {
-  const [accessToken, setAccessToken] = useState(null)
-
-  const handleAccessToken = (value) => {
-    setAccessToken(value)
-  }
-
 	return (
 		<>
-			<Navigation accessToken={accessToken} />
+			<Navigation />
 			<Switch>
-        <Route path={"/order/:id/checkout"}>
+				<Route path={'/order/:id/checkout'}>
 					<Checkout />
 				</Route>
-        <Route path={"/order/:id"}>
+				<Route path={'/order/:id'}>
 					<OrderSummary />
 				</Route>
-        <Route path={"/categories/:id"}>
+				<Route path={'/categories/:id'}>
 					<Category />
 				</Route>
-				<Route path={"/products/:id"}>
+				<Route path={'/products/:id'}>
 					<ProductDetails />
 				</Route>
-        <Route path={"/user/:id"}>
+				<Route path={'/user/:id'}>
 					<ProductDetails />
 				</Route>
-        <Route path="/account/signin">
-					<Signin onSignin={handleAccessToken} />
+				<Route path="/account/signin">
+					<Signin />
 				</Route>
-        <Route path="/cart">
+				<Route path="/account/register">
+					<Register />
+				</Route>
+				<Route path="/account/">
+					<Account />
+				</Route>
+				<Route path="/cart">
 					<Cart />
 				</Route>
 				<Route exact path="/">

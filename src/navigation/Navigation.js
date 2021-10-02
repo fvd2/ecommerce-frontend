@@ -136,24 +136,7 @@ const classNames = (...classes) => {
 	return classes.filter(Boolean).join(' ')
 }
 
-const Navigation = ({ accessToken }) => {
-	useEffect(() => {
-		const fetchUserData = async(accessToken) => {
-			const result = await fetch('http://localhost:3020/users/', {
-				headers: {
-					'authorization': 'Bearer '+ accessToken
-				}
-			})
-			console.log(result)
-			return  result
-		}
-		fetchUserData(accessToken)
-	}, [accessToken])
-
-	useEffect(() => {
-		console.log(document.cookie)
-	}, [])
-
+const Navigation = () => {
 	const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
 
 	const openMobileMenu = () => {

@@ -11,6 +11,7 @@ const Signin = () => {
 
 	return (
 		<div className="min-h-screen bg-gray-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
+            ADJUST TO REGISTER PAGE
 			<div className="sm:mx-auto sm:w-full sm:max-w-md">
 				<img
 					className="mx-auto h-12 w-auto"
@@ -52,7 +53,7 @@ const Signin = () => {
 							return errors
 						}}
 						onSubmit={(values, { setSubmitting }) => {
-							userCtx.signIn(values.email, values.password)
+							userCtx.handleSignIn(values.email, values.password)
 							setSubmitting(false)
 							setTimeout(() => {
 								history.push('/')

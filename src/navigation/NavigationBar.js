@@ -1,11 +1,79 @@
-import { Fragment, useContext } from 'react'
+import { Fragment, useContext, useEffect } from 'react'
+import useHttp from '../hooks/useHttp'
 import { UserContext } from '../context/user-context'
+import { ProductContext } from '../context/product-context'
 import { Popover, Transition } from '@headlessui/react'
 import { MenuIcon, ShoppingBagIcon } from '@heroicons/react/outline'
 import { NavLink } from 'react-router-dom'
 
 const NavigationBar = ({ onOpenMobileMenu, classNames, navigation }) => {
-	const userCtx = useContext(UserContext)
+	const { user, accessToken, updateAccessToken, updateUser } = useContext(UserContext)
+	const { products, updateProducts } = useContext(ProductContext)
+	const { loading, error, fetchData } = useHttp()
+
+	// load product data
+
+	useEffect(() => {
+		const fetchProducts = async () => {
+			await fetchData({ url:
+				`${process.env.REACT_APP_API_URL}/products/`}, updateProducts
+			)
+		}
+		fetchProducts()
+	}, [fetchData])
+
+	// load user data
+
+	useEffect(() => {
+		const fetchUserData = async accessToken => {
+			const handleResponse = async data => {
+				if (data) {
+					if (data.error === 'Invalid token') {
+						await fetchData(
+							{
+								url: `${process.env.REACT_APP_API_URL}/auth/token`,
+								method: 'POST',
+								credentials: 'include'
+							},
+							updateAccessToken
+						)
+					} else {
+						updateUser({ email: data.email })
+					}
+				} else {
+					updateUser({ email: null })
+				}
+			}
+
+			await fetchData(
+				{
+					url: `${process.env.REACT_APP_API_URL}/users/`,
+					headers: {
+						authorization: 'Bearer ' + accessToken
+					}
+				},
+				handleResponse
+			)
+		}
+		fetchUserData(accessToken)
+	}, [accessToken, updateUser, updateAccessToken, fetchData])
+
+	const handleSignOut = async () => {
+		try {
+			await fetchData(
+				{
+					url: `${process.env.REACT_APP_API_URL}/auth/logout`,
+					method: 'POST',
+					authorization: 'Bearer ' + accessToken,
+					credentials: 'include'
+				},
+				() => {}
+			)
+			updateUser({ email: null })
+		} catch (err) {
+			console.error(`Failed to log user out ${err}`)
+		}
+	}
 
 	return (
 		<div>
@@ -185,9 +253,9 @@ const NavigationBar = ({ onOpenMobileMenu, classNames, navigation }) => {
 								</div>
 							</Popover.Group>
 
-							<div className="ml-auto flex items-center">
-								{!userCtx.user.email ? (
-									<div className="hidden lg:flex lg:flex-1 lg:items-center lg:justify-end lg:space-x-6">
+							{!user.email ? (
+								<div className="ml-auto flex items-center">
+									<div className="hidden md:flex md:flex-1 md:items-center md:justify-end md:space-x-6">
 										<NavLink
 											to="/account/signin"
 											className="text-sm font-medium text-gray-700 hover:text-gray-800">
@@ -197,14 +265,16 @@ const NavigationBar = ({ onOpenMobileMenu, classNames, navigation }) => {
 											className="h-6 w-px bg-gray-200"
 											aria-hidden="true"
 										/>
-										<a
-											href="#"
+										<NavLink
+											to="/account/register"
 											className="text-sm font-medium text-gray-700 hover:text-gray-800">
-											Create account
-										</a>
+											Account
+										</NavLink>
 									</div>
-								) : (
-									<div className="hidden lg:flex lg:flex-1 lg:items-center lg:justify-end lg:space-x-6">
+								</div>
+							) : (
+								<div className="ml-auto flex items-center">
+									<div className="hidden md:flex md:flex-1 md:items-center md:justify-end md:space-x-6">
 										<NavLink
 											to="/account/"
 											className="text-sm font-medium text-gray-700 hover:text-gray-800">
@@ -215,30 +285,30 @@ const NavigationBar = ({ onOpenMobileMenu, classNames, navigation }) => {
 											aria-hidden="true"
 										/>
 										<button
-											onClick={userCtx.signOut}
+											onClick={handleSignOut}
 											className="text-sm font-medium text-gray-700 hover:text-gray-800">
 											Sign out
 										</button>
 									</div>
-								)}
-
-								{/* Cart */}
-								<div className="ml-4 flow-root lg:ml-6">
-									<NavLink
-										to="/cart"
-										className="group -m-2 p-2 flex items-center">
-										<ShoppingBagIcon
-											className="flex-shrink-0 h-6 w-6 text-gray-400 group-hover:text-gray-500"
-											aria-hidden="true"
-										/>
-										<span className="ml-2 text-sm font-medium text-gray-700 group-hover:text-gray-800">
-											0
-										</span>
-										<span className="sr-only">
-											items in cart, view bag
-										</span>
-									</NavLink>
 								</div>
+							)}
+
+							{/* Cart */}
+							<div className="ml-4 flow-root lg:ml-6">
+								<NavLink
+									to="/cart"
+									className="group -m-2 p-2 flex items-center">
+									<ShoppingBagIcon
+										className="flex-shrink-0 h-6 w-6 text-gray-400 group-hover:text-gray-500"
+										aria-hidden="true"
+									/>
+									<span className="ml-2 text-sm font-medium text-gray-700 group-hover:text-gray-800">
+										0
+									</span>
+									<span className="sr-only">
+										items in cart, view bag
+									</span>
+								</NavLink>
 							</div>
 						</div>
 					</div>

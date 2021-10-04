@@ -1,4 +1,5 @@
 import { useContext } from 'react'
+import useHttp from '../hooks/useHttp' 
 import { UserContext } from '../context/user-context'
 import { useHistory } from 'react-router'
 
@@ -7,7 +8,31 @@ import { Formik, Form, Field } from 'formik'
 const Signin = () => {
 	const userCtx = useContext(UserContext)
 	const history = useHistory()
+	const { loading, error, fetchData } = useHttp()
 
+	const handleSignIn = async (email, password) => {
+		try {
+			await fetchData(
+				{
+					url: `${process.env.REACT_APP_API_URL}/auth/login`,
+					method: 'POST',
+					body: JSON.stringify({
+						email,
+						password
+					}),
+					credentials: 'include',
+					headers: {
+						'Content-Type': 'application/json'
+					}
+				},
+				userCtx.updateAccessToken
+			)
+		} catch (err) {
+			console.error(
+				`An error occurred when registering a new user: ${err}`
+			)
+		}
+	}
 
 	return (
 		<div className="min-h-screen bg-gray-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
@@ -52,7 +77,7 @@ const Signin = () => {
 							return errors
 						}}
 						onSubmit={(values, { setSubmitting }) => {
-							userCtx.signIn(values.email, values.password)
+							handleSignIn(values.email, values.password)
 							setSubmitting(false)
 							setTimeout(() => {
 								history.push('/')

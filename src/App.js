@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react'
+import { useReducer, useCallback } from 'react'
 import { Switch, Route } from 'react-router-dom'
 import Navigation from './navigation/Navigation'
 import Storefront from './storefront/Storefront'
@@ -11,6 +11,7 @@ import Signin from './account/Signin'
 import Cart from './Cart'
 import Register from './account/Register'
 import Account from './account/Account'
+import cartReducer from './reducers/cart-reducer'
 
 const footerNavigation = {
 	shop: [
@@ -42,9 +43,19 @@ const footerNavigation = {
 }
 
 const App = () => {
+	const [cart, dispatch] = useReducer(cartReducer, {_id: '', userId: null, products: []})
+
+	const handleInitialCart = useCallback(async cartData => {
+		dispatch({ type: 'init', payload: await cartData })
+	}, [])
+
+	const handleCartUpdate = (type, payload) => {
+		dispatch({ type, payload })
+	}
+
 	return (
 		<>
-			<Navigation />
+			<Navigation onFetchCart={handleInitialCart} />
 			<Switch>
 				<Route path={'/order/:id/checkout'}>
 					<Checkout />
@@ -53,13 +64,10 @@ const App = () => {
 					<OrderSummary />
 				</Route>
 				<Route path={'/categories/:id'}>
-					<Category />
+					<Category onAddToCart={handleCartUpdate} />
 				</Route>
 				<Route path={'/products/:id'}>
-					<ProductDetails />
-				</Route>
-				<Route path={'/user/:id'}>
-					<ProductDetails />
+					<ProductDetails onAddToCart={handleCartUpdate} />
 				</Route>
 				<Route path="/account/signin">
 					<Signin />
@@ -71,7 +79,7 @@ const App = () => {
 					<Account />
 				</Route>
 				<Route path="/cart">
-					<Cart />
+					<Cart cart={cart} onUpdate={handleCartUpdate} />
 				</Route>
 				<Route exact path="/">
 					<Storefront />

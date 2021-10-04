@@ -136,7 +136,7 @@ const classNames = (...classes) => {
 	return classes.filter(Boolean).join(' ')
 }
 
-const Navigation = () => {
+const Navigation = ({onFetchCart}) => {
 	const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
 
 	const openMobileMenu = () => {
@@ -160,6 +160,7 @@ const Navigation = () => {
 				onOpenMobileMenu={openMobileMenu}
 				classNames={classNames}
 				navigation={navigation}
+				onFetchCart={onFetchCart}
 			/>
 		</div>
 	)

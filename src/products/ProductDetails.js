@@ -1,5 +1,5 @@
 import { useContext, useEffect, useState } from 'react'
-import { Tab } from '@headlessui/react'
+import { RadioGroup, Tab } from '@headlessui/react'
 import { StarIcon } from '@heroicons/react/solid'
 import { HeartIcon } from '@heroicons/react/outline'
 import Breadcrumb from './Breadcrumb'
@@ -70,18 +70,28 @@ const classNames = (...classes) => {
 	return classes.filter(Boolean).join(' ')
 }
 
-const ProductDetails = () => {
+const ProductDetails = ({ onAddToCart }) => {
 	const { loading, error, fetchData } = useHttp()
-
 	const [product, setProduct] = useState({
+		id: '',
 		brand: '',
-		price: '',
 		title: '',
 		description: '',
-		images: []
+		images: [],
+		rating: '',
+		votes: '',
+		sizes: []
 	})
+	const [selectedSize, setSelectedSize] = useState()
 	const { products } = useContext(ProductContext)
 	const params = useParams()
+
+	const handleAddProduct = event => {
+		event.preventDefault()
+		if(selectedSize){ 
+		onAddToCart('add', { product, size: selectedSize })}
+		else return
+	}
 
 	useEffect(() => {
 		const handleProduct = async productData => {
@@ -158,9 +168,12 @@ const ProductDetails = () => {
 
 					{/* Product info */}
 					<div className="mt-10 px-4 sm:px-0 sm:mt-16 lg:mt-0">
-						<h1 className="text-3xl font-extrabold tracking-tight text-gray-900">
-							{product.title}
+						<h1 className="text-4xl font-extralight italic tracking-tight md: mb-2 lg:mb-3 text-gray-800">
+							{product.brand}
 						</h1>
+						<h2 className="text-3xl font-extrabold tracking-tight text-gray-900">
+							{product.title}
+						</h2>
 
 						<div className="mt-3">
 							<h2 className="sr-only">Product information</h2>
@@ -204,12 +217,57 @@ const ProductDetails = () => {
 							/>
 						</div>
 
-						<form className="mt-6">
+						{/* Size picker */}
+						<div className="mt-8">
+							<div className="flex items-center justify-between">
+								<h2 className="text-sm font-medium text-gray-900">
+									Size
+								</h2>
+							</div>
+
+							<RadioGroup
+								value={selectedSize}
+								onChange={setSelectedSize}
+								className="mt-2">
+								<RadioGroup.Label className="sr-only" required>
+									Choose a size
+								</RadioGroup.Label>
+								<div className="grid grid-cols-3 gap-3 sm:grid-cols-6">
+									{product.sizes.map((size, index) => (
+										<RadioGroup.Option
+											key={index}
+											value={size}
+											className={({ active, checked }) =>
+												classNames(
+													active
+														? 'ring-2 ring-offset-2 ring-indigo-500'
+														: '',
+													checked
+														? 'bg-indigo-600 border-transparent text-white hover:bg-indigo-700'
+														: 'bg-white border-gray-200 text-gray-900 hover:bg-gray-50',
+													'border rounded-md py-3 px-3 flex items-center justify-center text-sm font-medium uppercase sm:flex-1'
+												)
+											}>
+											<RadioGroup.Label as="p">
+												{size}
+											</RadioGroup.Label>
+										</RadioGroup.Option>
+									))}
+								</div>
+							</RadioGroup>
+						</div>
+
+						<form className="mt-6" onSubmit={handleAddProduct}>
 							<div className="mt-10 flex sm:flex-col1">
 								<button
 									type="submit"
-									className="max-w-xs flex-1 bg-indigo-600 border border-transparent rounded-md py-3 px-8 flex items-center justify-center text-base font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-50 focus:ring-indigo-500 sm:w-full">
-									Add to bag
+									disabled={!selectedSize}
+									className={
+										selectedSize
+											? 'max-w-xs flex-1 bg-indigo-600 border border-transparent rounded-md py-3 px-8 flex items-center justify-center text-base font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-50 focus:ring-indigo-500 sm:w-full'
+											: 'cursor-not-allowed disabled:opacity-30 max-w-xs flex-1 bg-indigo-600 border border-transparent rounded-md py-3 px-8 flex items-center justify-center text-base font-medium text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-50 focus:ring-indigo-500 sm:w-full'
+									}>
+									Add to cart
 								</button>
 
 								<button

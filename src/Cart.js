@@ -1,3 +1,5 @@
+import { useEffect, useState } from 'react'
+import useHttp from './hooks/useHttp'
 import {
 	CheckIcon,
 	ClockIcon,
@@ -5,7 +7,7 @@ import {
 	XIcon
 } from '@heroicons/react/solid'
 
-const products = [
+const DUMMYREF = [
 	{
 		id: 1,
 		name: 'Basic Tee',
@@ -17,34 +19,59 @@ const products = [
 		imageSrc:
 			'https://tailwindui.com/img/ecommerce-images/shopping-cart-page-01-product-01.jpg',
 		imageAlt: "Front of men's Basic Tee in sienna."
-	},
-	{
-		id: 2,
-		name: 'Basic Tee',
-		href: '#',
-		price: '$32.00',
-		color: 'Black',
-		inStock: false,
-		leadTime: '3–4 weeks',
-		size: 'Large',
-		imageSrc:
-			'https://tailwindui.com/img/ecommerce-images/shopping-cart-page-01-product-02.jpg',
-		imageAlt: "Front of men's Basic Tee in black."
-	},
-	{
-		id: 3,
-		name: 'Nomad Tumbler',
-		href: '#',
-		price: '$35.00',
-		color: 'White',
-		inStock: true,
-		imageSrc:
-			'https://tailwindui.com/img/ecommerce-images/shopping-cart-page-01-product-03.jpg',
-		imageAlt: 'Insulated bottle with white base and black snap lid.'
 	}
 ]
 
-const Cart = () => {
+const Cart = ({ cart, onUpdate }) => {
+	// fetch cart items based on productId's
+	const [productData, setProductData] = useState([])
+	const { loading, error, fetchData } = useHttp()
+	const [totalAmount, setTotalAmount] = useState(0)
+
+	useEffect(() => {
+		if (cart.products.length > 0) {
+			const loadCart = async loadedData => {
+				setProductData(await loadedData)
+			}
+			const fetchCartItems = async () => {
+				const productsInCart = Object.values(cart.products).map(
+					product => product.productId
+				)
+				await fetchData(
+					{
+						url: `${process.env.REACT_APP_API_URL}/products/cart`,
+						method: 'POST',
+						headers: {
+							'Content-Type': 'application/json'
+						},
+						body: JSON.stringify({ productsInCart })
+					},
+					loadCart
+				)
+			}
+			fetchCartItems()
+		}
+	}, [cart, fetchData])
+
+	// useEffect(() => {
+	// 	// TODO: calculate total amount when changes are made to cart 
+	// },[])
+
+	const handleQuantityChange = (event, index) => {
+		onUpdate('selectQ', { index, value: event.target.value })
+	}
+
+	const optionValues = (cartItem) => {
+		let items = []
+		for (let i = 0; i < 100; ++i) {
+			if (i === cartItem.productQuantity) {
+				items.push(<option value={i} selected>{i}</option>)
+			}
+			items.push(<option value={i}>{i}</option>)
+		}
+		return items
+	}
+
 	return (
 		<div className="bg-white">
 			<div className="max-w-2xl mx-auto pt-16 pb-24 px-4 sm:px-6 lg:max-w-7xl lg:px-8">
@@ -59,16 +86,23 @@ const Cart = () => {
 							Items in your shopping cart
 						</h2>
 
-						<ul
-							className="border-t border-b border-gray-200 divide-y divide-gray-200">
-							{products.map((product, productIdx) => (
+						<ul className="border-t border-b border-gray-200 divide-y divide-gray-200">
+							{cart.products.map((cartItem, cartItemIdx) => (
 								<li
-									key={product.id}
+									key={cartItem._id}
 									className="flex py-6 sm:py-10">
 									<div className="flex-shrink-0">
 										<img
-											src={product.imageSrc}
-											alt={product.imageAlt}
+											src={
+												cartItem.imageSrc
+													? cartItem.imageSrc
+													: ''
+											}
+											alt={
+												cartItem.imageAlt
+													? cartItem.imageAlt
+													: ''
+											}
 											className="w-24 h-24 rounded-md object-center object-cover sm:w-48 sm:h-48"
 										/>
 									</div>
@@ -79,45 +113,45 @@ const Cart = () => {
 												<div className="flex justify-between">
 													<h3 className="text-sm">
 														<a
-															href={product.href}
+															href={cartItem.href}
 															className="font-medium text-gray-700 hover:text-gray-800">
-															{product.name}
+															{cartItem.title}
 														</a>
 													</h3>
 												</div>
 												<div className="mt-1 flex text-sm">
-													<p className="text-gray-500">
-														{product.color}
-													</p>
-													{product.size ? (
-														<p className="ml-4 pl-4 border-l border-gray-200 text-gray-500">
-															{product.size}
+													{cartItem.size ? (
+														<p className=" text-gray-500">
+															Size:{' '}
+															{cartItem.size}
 														</p>
 													) : null}
 												</div>
 												<p className="mt-1 text-sm font-medium text-gray-900">
-													{product.price}
+													{/* TODO: make product to price mapping */}
+													100
+													{/* {cartItem.productId.price} */}
 												</p>
 											</div>
 
 											<div className="mt-4 sm:mt-0 sm:pr-9">
 												<label
-													htmlFor={`quantity-${productIdx}`}
+													htmlFor={`quantity-${cartItemIdx}`}
 													className="sr-only">
-													Quantity, {product.name}
+													Quantity,{' '}
+													{cartItem.productQuantity}
 												</label>
 												<select
-													id={`quantity-${productIdx}`}
-													name={`quantity-${productIdx}`}
+													id={`quantity-${cartItemIdx}`}
+													name={`quantity-${cartItemIdx}`}
+													onChange={event =>
+														handleQuantityChange(
+															event,
+															cartItemIdx
+														)
+													}
 													className="max-w-full rounded-md border border-gray-300 py-1.5 text-base leading-5 font-medium text-gray-700 text-left shadow-sm focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
-													<option value={1}>1</option>
-													<option value={2}>2</option>
-													<option value={3}>3</option>
-													<option value={4}>4</option>
-													<option value={5}>5</option>
-													<option value={6}>6</option>
-													<option value={7}>7</option>
-													<option value={8}>8</option>
+													{optionValues(cartItem)}
 												</select>
 
 												<div className="absolute top-0 right-0">
@@ -135,26 +169,6 @@ const Cart = () => {
 												</div>
 											</div>
 										</div>
-
-										<p className="mt-4 flex text-sm text-gray-700 space-x-2">
-											{product.inStock ? (
-												<CheckIcon
-													className="flex-shrink-0 h-5 w-5 text-green-500"
-													aria-hidden="true"
-												/>
-											) : (
-												<ClockIcon
-													className="flex-shrink-0 h-5 w-5 text-gray-300"
-													aria-hidden="true"
-												/>
-											)}
-
-											<span>
-												{product.inStock
-													? 'In stock'
-													: `Ships in ${product.leadTime}`}
-											</span>
-										</p>
 									</div>
 								</li>
 							))}
@@ -165,70 +179,14 @@ const Cart = () => {
 					<section
 						aria-labelledby="summary-heading"
 						className="mt-16 bg-gray-50 rounded-lg px-4 py-6 sm:p-6 lg:p-8 lg:mt-0 lg:col-span-5">
-						<h2
-							id="summary-heading"
-							className="text-lg font-medium text-gray-900">
-							Order summary
-						</h2>
-
-						<dl className="mt-6 space-y-4">
-							<div className="flex items-center justify-between">
-								<dt className="text-sm text-gray-600">
-									Subtotal
-								</dt>
-								<dd className="text-sm font-medium text-gray-900">
-									$99.00
-								</dd>
-							</div>
-							<div className="border-t border-gray-200 pt-4 flex items-center justify-between">
-								<dt className="flex items-center text-sm text-gray-600">
-									<span>Shipping estimate</span>
-									<a
-										href="#"
-										className="ml-2 flex-shrink-0 text-gray-400 hover:text-gray-500">
-										<span className="sr-only">
-											Learn more about how shipping is
-											calculated
-										</span>
-										<QuestionMarkCircleIcon
-											className="h-5 w-5"
-											aria-hidden="true"
-										/>
-									</a>
-								</dt>
-								<dd className="text-sm font-medium text-gray-900">
-									$5.00
-								</dd>
-							</div>
-							<div className="border-t border-gray-200 pt-4 flex items-center justify-between">
-								<dt className="flex text-sm text-gray-600">
-									<span>Tax estimate</span>
-									<a
-										href="#"
-										className="ml-2 flex-shrink-0 text-gray-400 hover:text-gray-500">
-										<span className="sr-only">
-											Learn more about how tax is
-											calculated
-										</span>
-										<QuestionMarkCircleIcon
-											className="h-5 w-5"
-											aria-hidden="true"
-										/>
-									</a>
-								</dt>
-								<dd className="text-sm font-medium text-gray-900">
-									$8.32
-								</dd>
-							</div>
-							<div className="border-t border-gray-200 pt-4 flex items-center justify-between">
-								<dt className="text-base font-medium text-gray-900">
-									Order total
-								</dt>
-								<dd className="text-base font-medium text-gray-900">
-									$112.32
-								</dd>
-							</div>
-						</dl>
+						<div className="flex items-center justify-between">
+							<dt className="text-xl font-bold text-gray-900">
+								Order total
+							</dt>
+							<dd className="text-lg font-bold text-gray-900">
+								$112.32
+							</dd>
+						</div>
 
 						<div className="mt-6">
 							<button

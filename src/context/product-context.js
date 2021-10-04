@@ -1,11 +1,11 @@
-import { createContext, useState } from 'react'
+import { createContext, useCallback, useState } from 'react'
 
 const ProductContextProvider = ({ children }) => {
 	const [products, setProducts] = useState([])
 
-    const handleProducts = (productData) => {
+    const handleProducts = useCallback((productData) => {
         setProducts(productData)
-    }
+    }, [])
 
 	const productValues = {
 		products,

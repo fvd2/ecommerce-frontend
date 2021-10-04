@@ -6,21 +6,41 @@ import { Popover, Transition } from '@headlessui/react'
 import { MenuIcon, ShoppingBagIcon } from '@heroicons/react/outline'
 import { NavLink } from 'react-router-dom'
 
-const NavigationBar = ({ onOpenMobileMenu, classNames, navigation }) => {
-	const { user, accessToken, updateAccessToken, updateUser } = useContext(UserContext)
+const NavigationBar = ({
+	onOpenMobileMenu,
+	classNames,
+	navigation,
+	onFetchCart
+}) => {
+	const { user, accessToken, updateAccessToken, updateUser } =
+		useContext(UserContext)
 	const { products, updateProducts } = useContext(ProductContext)
 	const { loading, error, fetchData } = useHttp()
 
-	// load product data
+	// load existing or create new shopping session
+	useEffect(() => {
+		const setCart = async () => {
+			await fetchData(
+				{
+					url: `${process.env.REACT_APP_API_URL}/cart/`,
+					credentials: 'include'
+				},
+				onFetchCart
+			)
+		}
+		setCart()
+	}, [fetchData, onFetchCart])
 
+	// load product data
 	useEffect(() => {
 		const fetchProducts = async () => {
-			await fetchData({ url:
-				`${process.env.REACT_APP_API_URL}/products/`}, updateProducts
+			await fetchData(
+				{ url: `${process.env.REACT_APP_API_URL}/products/` },
+				updateProducts
 			)
 		}
 		fetchProducts()
-	}, [fetchData])
+	}, [fetchData, updateProducts])
 
 	// load user data
 

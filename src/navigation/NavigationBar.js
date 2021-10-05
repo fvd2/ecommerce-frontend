@@ -1,111 +1,41 @@
-import { Fragment, useContext, useEffect } from 'react'
-import useHttp from '../hooks/useHttp'
-import { UserContext } from '../context/user-context'
-import { ProductContext } from '../context/product-context'
+import { Fragment } from 'react'
 import { Popover, Transition } from '@headlessui/react'
 import { MenuIcon, ShoppingBagIcon } from '@heroicons/react/outline'
-import { NavLink } from 'react-router-dom'
+import { Link } from 'react-router-dom'
 
 const NavigationBar = ({
+	user,
+	onSignOut,
 	onOpenMobileMenu,
 	classNames,
-	navigation,
-	onFetchCart
+	navigation
 }) => {
-	const { user, accessToken, updateAccessToken, updateUser } =
-		useContext(UserContext)
-	const { products, updateProducts } = useContext(ProductContext)
-	const { loading, error, fetchData } = useHttp()
-
-	// load existing or create new shopping session
-	useEffect(() => {
-		const setCart = async () => {
-			await fetchData(
-				{
-					url: `${process.env.REACT_APP_API_URL}/cart/`,
-					credentials: 'include'
-				},
-				onFetchCart
-			)
-		}
-		setCart()
-	}, [fetchData, onFetchCart])
-
-	// load product data
-	useEffect(() => {
-		const fetchProducts = async () => {
-			await fetchData(
-				{ url: `${process.env.REACT_APP_API_URL}/products/` },
-				updateProducts
-			)
-		}
-		fetchProducts()
-	}, [fetchData, updateProducts])
-
-	// load user data
-
-	useEffect(() => {
-		const fetchUserData = async accessToken => {
-			const handleResponse = async data => {
-				if (data) {
-					if (data.error === 'Invalid token') {
-						await fetchData(
-							{
-								url: `${process.env.REACT_APP_API_URL}/auth/token`,
-								method: 'POST',
-								credentials: 'include'
-							},
-							updateAccessToken
-						)
-					} else {
-						updateUser({ email: data.email })
-					}
-				} else {
-					updateUser({ email: null })
-				}
-			}
-
-			await fetchData(
-				{
-					url: `${process.env.REACT_APP_API_URL}/users/`,
-					headers: {
-						authorization: 'Bearer ' + accessToken
-					}
-				},
-				handleResponse
-			)
-		}
-		fetchUserData(accessToken)
-	}, [accessToken, updateUser, updateAccessToken, fetchData])
-
-	const handleSignOut = async () => {
-		try {
-			await fetchData(
-				{
-					url: `${process.env.REACT_APP_API_URL}/auth/logout`,
-					method: 'POST',
-					authorization: 'Bearer ' + accessToken,
-					credentials: 'include'
-				},
-				() => {}
-			)
-			updateUser({ email: null })
-		} catch (err) {
-			console.error(`Failed to log user out ${err}`)
-		}
-	}
-
 	return (
 		<div>
 			<header className="relative bg-white">
-				<p className="bg-indigo-600 h-10 flex items-center justify-center text-sm font-medium text-white px-4 sm:px-6 lg:px-8">
-					Get free delivery on orders over $100
-				</p>
+				<div className="bg-indigo-600 h-10 flex items-center justify-center text-xs font-medium text-white px-4 sm:px-6 lg:px-8">
+					<p>
+						this is a fake webshop - credits:{' '}
+						<a
+							href="https://unsplash.com/@bonvoyagepictures"
+							target="_blank"
+							rel="noreferrer">
+							hero image
+						</a>
+						,{' '}
+						<a
+							href="https://tennis-point.nl"
+							target="_blank"
+							rel="noreferrer">
+							racket data
+						</a>
+					</p>
+				</div>
 
 				<nav
 					aria-label="Top"
 					className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-					<div className="border-b border-gray-200">
+					<div>
 						<div className="h-16 flex items-center">
 							<button
 								type="button"
@@ -120,14 +50,14 @@ const NavigationBar = ({
 
 							{/* Logo */}
 							<div className="ml-4 flex lg:ml-0">
-								<NavLink to="/">
+								<Link to="/">
 									<span className="sr-only">Workflow</span>
 									<img
 										className="h-8 w-auto"
 										src="https://tailwindui.com/img/logos/workflow-mark.svg?color=indigo&shade=600"
 										alt=""
 									/>
-								</NavLink>
+								</Link>
 							</div>
 
 							{/* Flyout menus */}
@@ -168,8 +98,8 @@ const NavigationBar = ({
 
 															<div className="relative bg-white">
 																<div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-																	<div className="grid grid-cols-2 gap-y-10 gap-x-8 py-16">
-																		<div className="col-start-2 grid grid-cols-2 gap-x-8">
+																	<div className="grid grid-cols-4 gap-y-10 gap-x-8 py-16">
+																		<div className="col-start-2 grid grid-cols-4 col-span-4 gap-x-8">
 																			{category.featured.map(
 																				item => (
 																					<div
@@ -177,41 +107,51 @@ const NavigationBar = ({
 																							item.name
 																						}
 																						className="group relative text-base sm:text-sm">
-																						<div className="aspect-w-1 aspect-h-1 rounded-lg bg-gray-100 overflow-hidden group-hover:opacity-75">
-																							<img
-																								src={
-																									item.imageSrc
+																						<div className="rounded-lg border border-1 border-gray-200 shadow-md p-5">
+																							<div className="aspect-w-1 aspect-h-1 rounded-lg bg-gray-100 overflow-hidden group-hover:opacity-75">
+																								<img
+																									src={
+																										item.imageSrc
+																									}
+																									alt={
+																										item.imageAlt
+																									}
+																									className="object-center object-cover"
+																								/>
+																							</div>
+																							<a
+																								href={
+																									item.href
 																								}
-																								alt={
-																									item.imageAlt
+																								className="mt-6 block font-medium text-gray-900">
+																								<span
+																									className="absolute z-10 inset-0"
+																									aria-hidden="true"
+																								/>
+																								{
+																									item.name
 																								}
-																								className="object-center object-cover"
-																							/>
-																						</div>
-																						<a
-																							href={
-																								item.href
-																							}
-																							className="mt-6 block font-medium text-gray-900">
-																							<span
-																								className="absolute z-10 inset-0"
+																							</a>
+																							<div
 																								aria-hidden="true"
-																							/>
-																							{
-																								item.name
-																							}
-																						</a>
-																						<p
-																							aria-hidden="true"
-																							className="mt-1">
-																							Shop
-																							now
-																						</p>
+																								className="mt-1 flex-column align-middle">
+																								<p>
+																									{
+																										item.brand
+																									}
+																								</p>
+																								<p>
+																									{
+																										item.title
+																									}
+																								</p>
+																							</div>
+																						</div>
 																					</div>
 																				)
 																			)}
 																		</div>
-																		<div className="row-start-1 grid grid-cols-3 gap-y-10 gap-x-8 text-sm">
+																		<div className="row-start-1 grid grid-cols-1 gap-y-10 gap-x-8 text-sm">
 																			{category.sections.map(
 																				section => (
 																					<div
@@ -261,51 +201,42 @@ const NavigationBar = ({
 											)}
 										</Popover>
 									))}
-
-									{navigation.pages.map(page => (
-										<a
-											key={page.name}
-											href={page.href}
-											className="flex items-center text-sm font-medium text-gray-700 hover:text-gray-800">
-											{page.name}
-										</a>
-									))}
 								</div>
 							</Popover.Group>
 
 							{!user.email ? (
 								<div className="ml-auto flex items-center">
 									<div className="hidden md:flex md:flex-1 md:items-center md:justify-end md:space-x-6">
-										<NavLink
+										<Link
 											to="/account/signin"
 											className="text-sm font-medium text-gray-700 hover:text-gray-800">
 											Sign in
-										</NavLink>
+										</Link>
 										<span
 											className="h-6 w-px bg-gray-200"
 											aria-hidden="true"
 										/>
-										<NavLink
+										<Link
 											to="/account/register"
 											className="text-sm font-medium text-gray-700 hover:text-gray-800">
-											Account
-										</NavLink>
+											Create account
+										</Link>
 									</div>
 								</div>
 							) : (
 								<div className="ml-auto flex items-center">
 									<div className="hidden md:flex md:flex-1 md:items-center md:justify-end md:space-x-6">
-										<NavLink
+										<Link
 											to="/account/"
 											className="text-sm font-medium text-gray-700 hover:text-gray-800">
 											Account
-										</NavLink>
+										</Link>
 										<span
 											className="h-6 w-px bg-gray-200"
 											aria-hidden="true"
 										/>
 										<button
-											onClick={handleSignOut}
+											onClick={onSignOut}
 											className="text-sm font-medium text-gray-700 hover:text-gray-800">
 											Sign out
 										</button>
@@ -315,7 +246,7 @@ const NavigationBar = ({
 
 							{/* Cart */}
 							<div className="ml-4 flow-root lg:ml-6">
-								<NavLink
+								<Link
 									to="/cart"
 									className="group -m-2 p-2 flex items-center">
 									<ShoppingBagIcon
@@ -328,7 +259,7 @@ const NavigationBar = ({
 									<span className="sr-only">
 										items in cart, view bag
 									</span>
-								</NavLink>
+								</Link>
 							</div>
 						</div>
 					</div>

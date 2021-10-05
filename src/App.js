@@ -1,33 +1,61 @@
 import { useReducer, useCallback } from 'react'
 import { Switch, Route } from 'react-router-dom'
-import Navigation from './navigation/Navigation'
-import Storefront from './storefront/Storefront'
-import Category from './products/Category'
-import ProductDetails from './products/ProductDetails'
-import Footer from './Footer'
-import Checkout from './order/Checkout'
-import OrderSummary from './order/OrderSummary'
-import Signin from './account/Signin'
-import Cart from './Cart'
-import Register from './account/Register'
 import Account from './account/Account'
+import Cart from './Cart'
 import cartReducer from './reducers/cart-reducer'
+import Category from './products/Category'
+import Checkout from './order/Checkout'
+import Footer from './Footer'
+import Navigation from './navigation/Navigation'
+import OrderSummary from './order/OrderSummary'
+import ProductDetails from './products/ProductDetails'
+import Register from './account/Register'
+import ScrollToTop from './ScrollToTop'
+import Signin from './account/Signin'
+import Storefront from './storefront/Storefront'
 
 const footerNavigation = {
-	shop: [
-		{ name: 'Bags', href: '#' },
-		{ name: 'Tees', href: '#' },
-		{ name: 'Objects', href: '#' },
-		{ name: 'Home Goods', href: '#' },
-		{ name: 'Accessories', href: '#' }
-	],
-	company: [
-		{ name: 'Who we are', href: '#' },
-		{ name: 'Sustainability', href: '#' },
-		{ name: 'Press', href: '#' },
-		{ name: 'Careers', href: '#' },
-		{ name: 'Terms & Conditions', href: '#' },
-		{ name: 'Privacy', href: '#' }
+	brands: [
+		{
+			name: 'HEAD',
+			href: '#'
+		},
+		{
+			name: 'Wilson',
+			href: '#'
+		},
+		{
+			name: 'Babolat',
+			href: '#'
+		},
+		{
+			name: 'Yonex',
+			href: '#'
+		},
+		{
+			name: 'Pacific',
+			href: '#'
+		},
+		{
+			name: 'PROKENNEX',
+			href: '#'
+		},
+		{
+			name: 'Prince',
+			href: '#'
+		},
+		{
+			name: 'Lacoste',
+			href: '#'
+		},
+		{
+			name: 'Dunlop',
+			href: '#'
+		},
+		{
+			name: 'Technifibre',
+			href: '#'
+		}
 	],
 	account: [
 		{ name: 'Manage Account', href: '#' },
@@ -43,7 +71,11 @@ const footerNavigation = {
 }
 
 const App = () => {
-	const [cart, dispatch] = useReducer(cartReducer, {_id: '', userId: null, products: []})
+	const [cart, dispatch] = useReducer(cartReducer, {
+		_id: '',
+		userId: null,
+		products: []
+	})
 
 	const handleInitialCart = useCallback(async cartData => {
 		dispatch({ type: 'init', payload: await cartData })
@@ -56,6 +88,8 @@ const App = () => {
 	return (
 		<>
 			<Navigation onFetchCart={handleInitialCart} />
+			<ScrollToTop />
+
 			<Switch>
 				<Route path={'/order/:id/checkout'}>
 					<Checkout />

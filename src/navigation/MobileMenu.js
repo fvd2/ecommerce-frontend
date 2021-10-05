@@ -1,10 +1,10 @@
 import { Fragment } from 'react'
-import { Dialog,  Tab, Transition } from '@headlessui/react'
-import {
-	XIcon
-} from '@heroicons/react/outline'
+import { Dialog, Tab, Transition } from '@headlessui/react'
+import { XIcon } from '@heroicons/react/outline'
+import { Link } from 'react-router-dom'
 
-const MobileMenu = ({isOpen, onOpen, onClose, classNames, navigation}) => {
+const MobileMenu = ({ user, onSignOut, isOpen, onOpen, onClose, classNames, navigation }) => {
+
 	return (
 		<>
 			{/* Mobile menu */}
@@ -71,39 +71,6 @@ const MobileMenu = ({isOpen, onOpen, onClose, classNames, navigation}) => {
 										<Tab.Panel
 											key={category.name}
 											className="pt-10 pb-8 px-4 space-y-10">
-											<div className="grid grid-cols-2 gap-x-4">
-												{category.featured.map(item => (
-													<div
-														key={item.name}
-														className="group relative text-sm">
-														<div className="aspect-w-1 aspect-h-1 rounded-lg bg-gray-100 overflow-hidden group-hover:opacity-75">
-															<img
-																src={
-																	item.imageSrc
-																}
-																alt={
-																	item.imageAlt
-																}
-																className="object-center object-cover"
-															/>
-														</div>
-														<a
-															href={item.href}
-															className="mt-6 block font-medium text-gray-900">
-															<span
-																className="absolute z-10 inset-0"
-																aria-hidden="true"
-															/>
-															{item.name}
-														</a>
-														<p
-															aria-hidden="true"
-															className="mt-1">
-															Shop now
-														</p>
-													</div>
-												))}
-											</div>
 											{category.sections.map(section => (
 												<div key={section.name}>
 													<p
@@ -112,7 +79,6 @@ const MobileMenu = ({isOpen, onOpen, onClose, classNames, navigation}) => {
 														{section.name}
 													</p>
 													<ul
-														role="list"
 														aria-labelledby={`${category.id}-${section.id}-heading-mobile`}
 														className="mt-6 flex flex-col space-y-6">
 														{section.items.map(
@@ -141,53 +107,41 @@ const MobileMenu = ({isOpen, onOpen, onClose, classNames, navigation}) => {
 									))}
 								</Tab.Panels>
 							</Tab.Group>
-
-							<div className="border-t border-gray-200 py-6 px-4 space-y-6">
-								{navigation.pages.map(page => (
-									<div key={page.name} className="flow-root">
-										<a
-											href={page.href}
+							{!user.email ? (
+								<div className="border-t border-gray-200 py-6 px-4 space-y-6">
+									<div className="flow-root">
+										<Link
+											to="/account/signin"
 											className="-m-2 p-2 block font-medium text-gray-900">
-											{page.name}
-										</a>
+											Sign in
+										</Link>
 									</div>
-								))}
-							</div>
-
-							<div className="border-t border-gray-200 py-6 px-4 space-y-6">
-								<div className="flow-root">
-									<a
-										href="#"
-										className="-m-2 p-2 block font-medium text-gray-900">
-										Sign in
-									</a>
+									<div className="flow-root">
+										<Link
+											to="/account/register"
+											className="-m-2 p-2 block font-medium text-gray-900">
+											Create account
+										</Link>
+									</div>
 								</div>
-								<div className="flow-root">
-									<a
-										href="#"
-										className="-m-2 p-2 block font-medium text-gray-900">
-										Create account
-									</a>
+							) : (
+								<div className="border-t border-gray-200 py-6 px-4 space-y-6">
+									<div className="flow-root">
+										<Link
+											to="/account/"
+											className="-m-2 p-2 block font-medium text-gray-900">
+											Account
+										</Link>
+									</div>
+									<div className="flow-root">
+										<button
+											onClick={onSignOut}
+											className="-m-2 p-2 block font-medium text-gray-900">
+											Sign out
+										</button>
+									</div>
 								</div>
-							</div>
-
-							<div className="border-t border-gray-200 py-6 px-4">
-								<a
-									href="#"
-									className="-m-2 p-2 flex items-center">
-									<img
-										src="https://tailwindui.com/img/flags/flag-canada.svg"
-										alt=""
-										className="w-5 h-auto block flex-shrink-0"
-									/>
-									<span className="ml-3 block text-base font-medium text-gray-900">
-										CAD
-									</span>
-									<span className="sr-only">
-										, change currency
-									</span>
-								</a>
-							</div>
+							)}
 						</div>
 					</Transition.Child>
 				</Dialog>

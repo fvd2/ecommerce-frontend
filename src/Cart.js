@@ -61,6 +61,7 @@ const Cart = ({ cart, onUpdate }) => {
 		onUpdate('selectQ', { index, value: event.target.value })
 	}
 
+	// generate quantity selector and pre-select current value
 	const optionValues = (cartItem) => {
 		let items = []
 		for (let i = 0; i < 100; ++i) {

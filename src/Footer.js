@@ -1,4 +1,61 @@
-const Footer = ({ footerNavigation }) => {
+const footerNavigation = {
+	brands: [
+		{
+			name: 'HEAD',
+			href: '/categories/HEAD'
+		},
+		{
+			name: 'Wilson',
+			href: '/categories/Wilson'
+		},
+		{
+			name: 'Babolat',
+			href: '/categories/Babolat'
+		},
+		{
+			name: 'Yonex',
+			href: '/categories/Yonex'
+		},
+		{
+			name: 'Pacific',
+			href: '/categories/Pacific'
+		},
+		{
+			name: 'PROKENNEX',
+			href: '/categories/PROKENNEX'
+		},
+		{
+			name: 'Prince',
+			href: '/categories/Prince'
+		},
+		{
+			name: 'Lacoste',
+			href: '/categories/Lacoste'
+		},
+		{
+			name: 'Dunlop',
+			href: '/categories/Dunlop'
+		},
+		{
+			name: 'Technifibre',
+			href: '/categories/Technifibre'
+		}
+	],
+	account: [
+		{ name: 'Manage Account', href: '#' },
+		{ name: 'Returns & Exchanges', href: '#' },
+		{ name: 'Redeem a Gift Card', href: '#' }
+	],
+	connect: [
+		{ name: 'Contact Us', href: '#' },
+		{ name: 'Twitter', href: '#' },
+		{ name: 'Instagram', href: '#' },
+		{ name: 'Pinterest', href: '#' }
+	]
+}
+
+
+const Footer = () => {
 	return (
 		<footer aria-labelledby="footer-heading" className="bg-gray-900">
 			<h2 id="footer-heading" className="sr-only">

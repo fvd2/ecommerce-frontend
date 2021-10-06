@@ -1,15 +1,24 @@
-import { createContext, useCallback, useState } from 'react'
+import {
+	createContext,
+	useCallback,
+	useReducer,
+} from 'react'
+import ProductReducer from '../reducers/product-reducer'
 
 const ProductContextProvider = ({ children }) => {
-	const [products, setProducts] = useState([])
+	const [productData, dispatch] = useReducer(ProductReducer, {
+		products: [],
+		productsIndexMap: new Map()
+	})
 
-    const handleProducts = useCallback((productData) => {
-        setProducts(productData)
-    }, [])
+	const handleProducts = useCallback(products => {
+		dispatch({ type: 'set', payload: { products } })
+	}, [])
 
 	const productValues = {
-		products,
-        updateProducts: handleProducts
+		products: productData.products,
+		productsIndexMap: productData.productsIndexMap,
+		updateProducts: handleProducts
 	}
 
 	return (

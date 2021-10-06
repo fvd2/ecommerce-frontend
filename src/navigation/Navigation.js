@@ -1,10 +1,11 @@
-import { useContext, useEffect, useState } from 'react'
+import { useContext, useEffect, useRef, useState } from 'react'
 import useHttp from '../hooks/useHttp'
 import { UserContext } from '../context/user-context'
+import { CartContext } from '../context/cart-context'
 import { ProductContext } from '../context/product-context'
 import MobileMenu from './MobileMenu'
 import NavigationBar from './NavigationBar'
-import { Link, useHistory } from 'react-router-dom'
+import { useHistory } from 'react-router-dom'
 
 const navigation = {
 	categories: [
@@ -54,45 +55,46 @@ const navigation = {
 					id: 'brands',
 					name: 'Brands',
 					items: [
+						{ name: 'ALL', href: '/products' },
 						{
 							name: 'HEAD',
-							href: '#'
+							href: '/categories/HEAD'
 						},
 						{
 							name: 'Wilson',
-							href: '#'
+							href: '/categories/Wilson'
 						},
 						{
 							name: 'Babolat',
-							href: '#'
+							href: '/categories/Babolat'
 						},
 						{
 							name: 'Yonex',
-							href: '#'
+							href: '/categories/Yonex'
 						},
 						{
 							name: 'Pacific',
-							href: '#'
+							href: '/categories/Pacific'
 						},
 						{
 							name: 'PROKENNEX',
-							href: '#'
+							href: '/categories/PROKENNEX'
 						},
 						{
 							name: 'Prince',
-							href: '#'
+							href: '/categories/Prince'
 						},
 						{
 							name: 'Lacoste',
-							href: '#'
+							href: '/categories/Lacoste'
 						},
 						{
 							name: 'Dunlop',
-							href: '#'
+							href: '/categories/Dunlop'
 						},
 						{
 							name: 'Technifibre',
-							href: '#'
+							href: '/categories/Technifibre'
 						}
 					]
 				}
@@ -105,38 +107,16 @@ const classNames = (...classes) => {
 	return classes.filter(Boolean).join(' ')
 }
 
-const Navigation = ({ onFetchCart }) => {
+const Navigation = () => {
 	const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+	const mountedRef = useRef(true)
 	const { user, accessToken, updateAccessToken, updateUser } =
 		useContext(UserContext)
-	const { products, updateProducts } = useContext(ProductContext)
+	const { dispatch, cartSize } = useContext(CartContext)
+	const { products, productsIndexMap, updateProducts } =
+		useContext(ProductContext)
 	const { loading, error, fetchData } = useHttp()
 	const history = useHistory()
-
-	// load existing or create new shopping session
-	useEffect(() => {
-		const setCart = async () => {
-			await fetchData(
-				{
-					url: `${process.env.REACT_APP_API_URL}/cart/`,
-					credentials: 'include'
-				},
-				onFetchCart
-			)
-		}
-		setCart()
-	}, [fetchData, onFetchCart])
-
-	// load product data
-	useEffect(() => {
-		const fetchProducts = async () => {
-			await fetchData(
-				{ url: `${process.env.REACT_APP_API_URL}/products/` },
-				updateProducts
-			)
-		}
-		fetchProducts()
-	}, [fetchData, updateProducts])
 
 	// load user data
 	useEffect(() => {
@@ -171,7 +151,47 @@ const Navigation = ({ onFetchCart }) => {
 			)
 		}
 		fetchUserData(accessToken)
+		return () => updateUser({ email: null })
 	}, [accessToken, updateUser, updateAccessToken, fetchData])
+
+	// load product data
+	useEffect(() => {
+		const fetchProducts = async () => {
+			await fetchData(
+				{ url: `${process.env.REACT_APP_API_URL}/products/` },
+				updateProducts
+			)
+		}
+		if (mountedRef.current) {
+			fetchProducts()
+		} else return
+		return () => updateProducts([])
+	}, [fetchData, updateProducts])
+
+	// load existing or create new shopping session
+	useEffect(() => {
+		const handleInitialCart = async cartData => {
+			dispatch({ type: 'init', payload: await cartData })
+		}
+		const setCart = async () => {
+			await fetchData(
+				{
+					url: `${process.env.REACT_APP_API_URL}/cart/`,
+					credentials: 'include',
+					headers: {
+						authorization: 'Bearer ' + accessToken
+					}
+				},
+				handleInitialCart
+			)
+		}
+		if (mountedRef.current) {
+			setCart()
+		} else return
+		return () => {
+			mountedRef.current = false
+		}
+	}, [fetchData, dispatch, accessToken])
 
 	const handleSignOut = async () => {
 		try {
@@ -212,15 +232,14 @@ const Navigation = ({ onFetchCart }) => {
 				onClose={closeMobileMenu}
 				classNames={classNames}
 				navigation={navigation}
-
 			/>
 			<NavigationBar
 				user={user}
 				onSignOut={handleSignOut}
+				cartSize={cartSize}
 				onOpenMobileMenu={openMobileMenu}
 				classNames={classNames}
 				navigation={navigation}
-				onFetchCart={onFetchCart}
 			/>
 		</div>
 	)

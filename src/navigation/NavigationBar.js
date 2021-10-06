@@ -6,6 +6,7 @@ import { Link } from 'react-router-dom'
 const NavigationBar = ({
 	user,
 	onSignOut,
+	cartSize,
 	onOpenMobileMenu,
 	classNames,
 	navigation
@@ -104,7 +105,7 @@ const NavigationBar = ({
 																				item => (
 																					<div
 																						key={
-																							item.name
+																							item._id
 																						}
 																						className="group relative text-base sm:text-sm">
 																						<div className="rounded-lg border border-1 border-gray-200 shadow-md p-5">
@@ -254,7 +255,7 @@ const NavigationBar = ({
 										aria-hidden="true"
 									/>
 									<span className="ml-2 text-sm font-medium text-gray-700 group-hover:text-gray-800">
-										0
+										{cartSize}
 									</span>
 									<span className="sr-only">
 										items in cart, view bag

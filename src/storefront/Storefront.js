@@ -1,43 +1,5 @@
-import { useContext } from 'react'
-import { ProductContext } from '../context/product-context'
 import { Link } from 'react-router-dom'
 
-const collections = [
-	{
-		name: "Women's",
-		href: '#',
-		imageSrc:
-			'https://tailwindui.com/img/ecommerce-images/home-page-04-collection-01.jpg',
-		imageAlt: 'Woman wearing a comfortable cotton t-shirt.'
-	},
-	{
-		name: "Men's",
-		href: '#',
-		imageSrc:
-			'https://tailwindui.com/img/ecommerce-images/home-page-04-collection-02.jpg',
-		imageAlt: 'Man wearing a comfortable and casual cotton t-shirt.'
-	},
-	{
-		name: 'Desk Accessories',
-		href: '#',
-		imageSrc:
-			'https://tailwindui.com/img/ecommerce-images/home-page-04-collection-03.jpg',
-		imageAlt:
-			'Person sitting at a wooden desk with paper note organizer, pencil and tablet.'
-	}
-]
-const trendingProducts = [
-	{
-		id: 1,
-		name: 'Leather Long Wallet',
-		color: 'Natural',
-		price: '$75',
-		href: '#',
-		imageSrc:
-			'https://tailwindui.com/img/ecommerce-images/home-page-04-trending-product-02.jpg',
-		imageAlt: 'Hand stitched, orange leather long wallet.'
-	}
-]
 const perks = [
 	{
 		name: 'Free returns',
@@ -69,70 +31,42 @@ const perks = [
 	}
 ]
 
-const offers = [
-	{
-		name: 'Download the app',
-		description: 'Get an exclusive $5 off code',
-		href: '#'
-	},
-	{
-		name: "Return when you're ready",
-		description: '60 days of free returns',
-		href: '#'
-	},
-	{
-		name: 'Sign up for our newsletter',
-		description: '15% off your first order',
-		href: '#'
-	}
-]
-
-function classNames(...classes) {
-	return classes.filter(Boolean).join(' ')
-}
-
 const Storefront = () => {
-	const productCtx = useContext(ProductContext)
-
-	const allProducts = productCtx.products.map(item => ({
-		_id: item._id,
-		brand: item.brand,
-		title: item.title,
-		price: item.price,
-		imageSrc: item.images[0].src
-	}))
-
 	const trendingRackets = [
-        {
-            "_id": "615c13d540b9d83fa691eb42",
-            "brand": "Babolat",
-            "title": "Rafael Nadal Pure Aero",
-            "price": "259.95",
-            "imageSrc": "https://firebasestorage.googleapis.com/v0/b/compete-abdab.appspot.com/o/3a.jpg?alt=media&token=b81ca23b-e310-46be-8dd9-723463dd78cc"
-        },
-        {
-            "_id": "615c13d540b9d83fa691eb47",
-            "brand": "Lacoste",
-            "title": "L20",
-            "price": "290.00",
-            "imageSrc": "https://firebasestorage.googleapis.com/v0/b/compete-abdab.appspot.com/o/8a.jpg?alt=media&token=469c0738-6dad-4a05-9c92-7f6c7b2df731"
-        },
-        {
-            "_id": "615c13d540b9d83fa691eb4d",
-            "brand": "HEAD",
-            "title": "Graphene 360+ Speed MP",
-            "price": "250.00",
-            "imageSrc": "https://firebasestorage.googleapis.com/v0/b/compete-abdab.appspot.com/o/14a.jpg?alt=media&token=9872fe9d-c103-4870-9211-edd274c39ad6"
-        },
-        {
-            "_id": "615c13d540b9d83fa691eb52",
-            "brand": "Prince",
-            "title": "Phantom 100X",
-            "price": "239.95",
-            "imageSrc": "https://firebasestorage.googleapis.com/v0/b/compete-abdab.appspot.com/o/19a.jpg?alt=media&token=db5648e9-d89f-4bbc-a1e3-e9dea04ba736"
-        }
-    ]
-    
+		{
+			_id: '615c13d540b9d83fa691eb42',
+			brand: 'Babolat',
+			title: 'Rafael Nadal Pure Aero',
+			price: '259.95',
+			imageSrc:
+				'https://firebasestorage.googleapis.com/v0/b/compete-abdab.appspot.com/o/3a.jpg?alt=media&token=b81ca23b-e310-46be-8dd9-723463dd78cc'
+		},
+		{
+			_id: '615c13d540b9d83fa691eb47',
+			brand: 'Lacoste',
+			title: 'L20',
+			price: '290.00',
+			imageSrc:
+				'https://firebasestorage.googleapis.com/v0/b/compete-abdab.appspot.com/o/8a.jpg?alt=media&token=469c0738-6dad-4a05-9c92-7f6c7b2df731'
+		},
+		{
+			_id: '615c13d540b9d83fa691eb4d',
+			brand: 'HEAD',
+			title: 'Graphene 360+ Speed MP',
+			price: '250.00',
+			imageSrc:
+				'https://firebasestorage.googleapis.com/v0/b/compete-abdab.appspot.com/o/14a.jpg?alt=media&token=9872fe9d-c103-4870-9211-edd274c39ad6'
+		},
+		{
+			_id: '615c13d540b9d83fa691eb52',
+			brand: 'Prince',
+			title: 'Phantom 100X',
+			price: '239.95',
+			imageSrc:
+				'https://firebasestorage.googleapis.com/v0/b/compete-abdab.appspot.com/o/19a.jpg?alt=media&token=db5648e9-d89f-4bbc-a1e3-e9dea04ba736'
+		}
+	]
+
 	return (
 		<main>
 			{/* Hero */}
@@ -156,11 +90,11 @@ const Storefront = () => {
 										aliqua.
 									</p>
 									<div className="mt-6">
-										<a
-											href="#"
+										<Link
+											to="/products"
 											className="inline-block bg-indigo-600 border border-transparent py-3 px-8 rounded-md font-medium text-white hover:bg-indigo-700">
-											Shop Tennis Rackets
-										</a>
+											Shop All Brands
+										</Link>
 									</div>
 								</div>
 							</div>
@@ -188,7 +122,9 @@ const Storefront = () => {
 
 					<div className="mt-6 grid grid-cols-2 gap-x-4 gap-y-10 sm:gap-x-6 md:grid-cols-4 md:gap-y-0 lg:gap-x-8">
 						{trendingRackets.map(product => (
-							<div key={product._id} className="group relative rounded-lg border border-1 border-gray-200 shadow-lg p-5">
+							<div
+								key={product._id}
+								className="group relative rounded-lg border border-1 border-gray-200 shadow-lg p-5">
 								<div className="w-full h-56 rounded-md overflow-hidden group-hover:opacity-75 lg:h-72 xl:h-80">
 									<img
 										src={product.imageSrc}

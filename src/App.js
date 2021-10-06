@@ -1,10 +1,8 @@
-import { useReducer, useCallback } from 'react'
 import { Switch, Route } from 'react-router-dom'
 import Account from './account/Account'
+import AllProducts from './products/AllProducts'
 import Cart from './Cart'
-import cartReducer from './reducers/cart-reducer'
 import Category from './products/Category'
-import Checkout from './order/Checkout'
 import Footer from './Footer'
 import Navigation from './navigation/Navigation'
 import OrderSummary from './order/OrderSummary'
@@ -13,95 +11,28 @@ import Register from './account/Register'
 import ScrollToTop from './ScrollToTop'
 import Signin from './account/Signin'
 import Storefront from './storefront/Storefront'
-
-const footerNavigation = {
-	brands: [
-		{
-			name: 'HEAD',
-			href: '#'
-		},
-		{
-			name: 'Wilson',
-			href: '#'
-		},
-		{
-			name: 'Babolat',
-			href: '#'
-		},
-		{
-			name: 'Yonex',
-			href: '#'
-		},
-		{
-			name: 'Pacific',
-			href: '#'
-		},
-		{
-			name: 'PROKENNEX',
-			href: '#'
-		},
-		{
-			name: 'Prince',
-			href: '#'
-		},
-		{
-			name: 'Lacoste',
-			href: '#'
-		},
-		{
-			name: 'Dunlop',
-			href: '#'
-		},
-		{
-			name: 'Technifibre',
-			href: '#'
-		}
-	],
-	account: [
-		{ name: 'Manage Account', href: '#' },
-		{ name: 'Returns & Exchanges', href: '#' },
-		{ name: 'Redeem a Gift Card', href: '#' }
-	],
-	connect: [
-		{ name: 'Contact Us', href: '#' },
-		{ name: 'Twitter', href: '#' },
-		{ name: 'Instagram', href: '#' },
-		{ name: 'Pinterest', href: '#' }
-	]
-}
+import CheckoutForm from './order/CheckoutForm'
 
 const App = () => {
-	const [cart, dispatch] = useReducer(cartReducer, {
-		_id: '',
-		userId: null,
-		products: []
-	})
-
-	const handleInitialCart = useCallback(async cartData => {
-		dispatch({ type: 'init', payload: await cartData })
-	}, [])
-
-	const handleCartUpdate = (type, payload) => {
-		dispatch({ type, payload })
-	}
-
 	return (
 		<>
-			<Navigation onFetchCart={handleInitialCart} />
+			<Navigation />
 			<ScrollToTop />
-
 			<Switch>
-				<Route path={'/order/:id/checkout'}>
-					<Checkout />
+				<Route path={'/order/checkout/:id'}>
+					<CheckoutForm />
 				</Route>
 				<Route path={'/order/:id'}>
 					<OrderSummary />
 				</Route>
 				<Route path={'/categories/:id'}>
-					<Category onAddToCart={handleCartUpdate} />
+					<Category />
 				</Route>
 				<Route path={'/products/:id'}>
-					<ProductDetails onAddToCart={handleCartUpdate} />
+					<ProductDetails />
+				</Route>
+				<Route path={'/products'}>
+					<AllProducts />
 				</Route>
 				<Route path="/account/signin">
 					<Signin />
@@ -113,13 +44,13 @@ const App = () => {
 					<Account />
 				</Route>
 				<Route path="/cart">
-					<Cart cart={cart} onUpdate={handleCartUpdate} />
+					<Cart />
 				</Route>
 				<Route exact path="/">
 					<Storefront />
 				</Route>
 			</Switch>
-			<Footer footerNavigation={footerNavigation} />
+			<Footer />
 		</>
 	)
 }

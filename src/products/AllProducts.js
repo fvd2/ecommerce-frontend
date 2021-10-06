@@ -1,30 +1,27 @@
 import { useEffect, useState } from 'react'
-import { useParams } from 'react-router'
 import { Link } from 'react-router-dom'
 import useHttp from '../hooks/useHttp'
+import { useParams } from 'react-router'
 
-const Category = () => {
-	const [productsInCategory, setProductsInCategory] = useState([])
-	const params = useParams()
+const AllProducts = () => {
+	const [allProducts, setAllProducts] = useState([])
 	const { loading, error, fetchData } = useHttp()
 
 	useEffect(() => {
 		const handleProductData = async productData => {
-			setProductsInCategory(await productData)
+			setAllProducts(await productData)
 		}
 
-		const getCategoryData = async () => {
-			if (params.id) {
-				await fetchData(
-					{
-						url: `${process.env.REACT_APP_API_URL}/products/category/${params.id}`
-					},
-					handleProductData
-				)
-			}
+		const getAllProducts = async () => {
+			await fetchData(
+				{
+					url: `${process.env.REACT_APP_API_URL}/products`
+				},
+				handleProductData
+			)
 		}
-		getCategoryData()
-	}, [params.id, fetchData])
+		getAllProducts()
+	}, [fetchData])
 
 	return (
 			<section aria-labelledby="trending-heading">
@@ -33,12 +30,12 @@ const Category = () => {
 						<h2
 							id="favorites-heading"
 							className="text-2xl font-extrabold tracking-tight text-gray-900">
-							Shop {params.id}
+							Shop all rackets
 						</h2>
 					</div>
 
 					<div className="mt-6 grid grid-cols-2 gap-x-4 gap-y-10 sm:gap-x-6 md:grid-cols-4 md:gap-y-0 lg:gap-x-8">
-						{productsInCategory.map(product => (
+						{allProducts.map(product => (
 							<div
 								key={product._id}
 								className="group relative rounded-lg border border-1 border-gray-200 shadow-lg p-5">
@@ -69,4 +66,4 @@ const Category = () => {
 	)
 }
 
-export default Category
+export default AllProducts 

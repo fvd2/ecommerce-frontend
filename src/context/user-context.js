@@ -8,10 +8,12 @@ const UserContextProvider = ({ children }) => {
 
 	const handleAccessToken = useCallback(({ accessToken }) => {
 		setAccessToken(accessToken)
+		return () => setAccessToken(null)
 	}, [])
 
 	const handleUser = useCallback((userData) => {
 		setUser(userData)
+		return () => setUser({ email: null})
 	}, [])
 
 	const authValues = {

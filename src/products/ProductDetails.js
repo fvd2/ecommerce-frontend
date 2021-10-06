@@ -1,19 +1,15 @@
-import { useContext, useEffect, useState } from 'react'
+import { useContext, useEffect, useRef, useState } from 'react'
+import { CartContext } from '../context/cart-context'
 import { RadioGroup, Tab } from '@headlessui/react'
 import { StarIcon } from '@heroicons/react/solid'
-import { HeartIcon } from '@heroicons/react/outline'
-import Breadcrumb from './Breadcrumb'
-import { ProductContext } from '../context/product-context'
-import { useParams } from 'react-router'
+import { useParams, useHistory } from 'react-router'
 import useHttp from '../hooks/useHttp'
-
-const breadcrumbs = [{ id: 1, name: 'Men', href: '#' }]
 
 const classNames = (...classes) => {
 	return classes.filter(Boolean).join(' ')
 }
 
-const ProductDetails = ({ onAddToCart }) => {
+const ProductDetails = () => {
 	const { loading, error, fetchData } = useHttp()
 	const [product, setProduct] = useState({
 		id: '',
@@ -26,14 +22,19 @@ const ProductDetails = ({ onAddToCart }) => {
 		sizes: []
 	})
 	const [selectedSize, setSelectedSize] = useState()
-	const { products } = useContext(ProductContext)
+	const { onCartUpdate: onAddToCart } = useContext(CartContext)
 	const params = useParams()
-
+	const history = useHistory()
+	const mountRef = useRef()
+	
 	const handleAddProduct = event => {
 		event.preventDefault()
-		if(selectedSize){ 
-		onAddToCart('add', { product, size: selectedSize })}
-		else return
+		if (selectedSize) {
+			onAddToCart('add', { product, size: selectedSize })
+			setTimeout(() => {
+				history.push('/cart/')
+			}, 500)
+		} else return
 	}
 
 	useEffect(() => {
@@ -54,9 +55,14 @@ const ProductDetails = ({ onAddToCart }) => {
 		getProduct()
 	}, [params.id, fetchData])
 
+	useEffect(() => {
+
+
+		return () => mountRef.current = false
+	}, [])
+
 	return (
 		<div className="bg-white">
-			<Breadcrumb breadcrumbs={breadcrumbs} />
 			<div className="max-w-2xl mx-auto py-16 px-4 sm:py-24 sm:px-6 lg:max-w-7xl lg:px-8">
 				<div className="lg:grid lg:grid-cols-2 lg:gap-x-8 lg:items-start">
 					{/* Image gallery */}
@@ -212,28 +218,8 @@ const ProductDetails = ({ onAddToCart }) => {
 									}>
 									Add to cart
 								</button>
-
-								<button
-									type="button"
-									className="ml-4 py-3 px-3 rounded-md flex items-center justify-center text-gray-400 hover:bg-gray-100 hover:text-gray-500">
-									<HeartIcon
-										className="h-6 w-6 flex-shrink-0"
-										aria-hidden="true"
-									/>
-									<span className="sr-only">
-										Add to favorites
-									</span>
-								</button>
 							</div>
 						</form>
-
-						<section
-							aria-labelledby="details-heading"
-							className="mt-12">
-							<h2 id="details-heading" className="sr-only">
-								Additional details
-							</h2>
-						</section>
 					</div>
 				</div>
 			</div>

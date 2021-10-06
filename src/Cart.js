@@ -1,85 +1,64 @@
-import { useEffect, useState } from 'react'
+import { useContext, useEffect, useState } from 'react'
+import { ProductContext } from './context/product-context'
+import { CartContext } from './context/cart-context'
+import CartItem from './CartItem'
 import useHttp from './hooks/useHttp'
-import {
-	CheckIcon,
-	ClockIcon,
-	QuestionMarkCircleIcon,
-	XIcon
-} from '@heroicons/react/solid'
+import { useHistory } from 'react-router'
 
-const DUMMYREF = [
-	{
-		id: 1,
-		name: 'Basic Tee',
-		href: '#',
-		price: '$32.00',
-		color: 'Sienna',
-		inStock: true,
-		size: 'Large',
-		imageSrc:
-			'https://tailwindui.com/img/ecommerce-images/shopping-cart-page-01-product-01.jpg',
-		imageAlt: "Front of men's Basic Tee in sienna."
-	}
-]
-
-const Cart = ({ cart, onUpdate }) => {
+const Cart = () => {
 	// fetch cart items based on productId's
-	const [productData, setProductData] = useState([])
-	const { loading, error, fetchData } = useHttp()
 	const [totalAmount, setTotalAmount] = useState(0)
+	const { products, productsIndexMap } = useContext(ProductContext)
+	const { cart } = useContext(CartContext)
+	const { loading, error, fetchData } = useHttp()
+	const history = useHistory()
 
 	useEffect(() => {
-		if (cart.products.length > 0) {
-			const loadCart = async loadedData => {
-				setProductData(await loadedData)
-			}
-			const fetchCartItems = async () => {
-				const productsInCart = Object.values(cart.products).map(
-					product => product.productId
-				)
-				await fetchData(
-					{
-						url: `${process.env.REACT_APP_API_URL}/products/cart`,
-						method: 'POST',
-						headers: {
-							'Content-Type': 'application/json'
-						},
-						body: JSON.stringify({ productsInCart })
-					},
-					loadCart
-				)
-			}
-			fetchCartItems()
+		if (products.length !== 0) {
+			// calculate total amount when changes are made to cart
+			const total = cart.products.reduce(
+				(prev, curr) =>
+					prev +
+					curr.productQuantity *
+						products[productsIndexMap.get(curr.productId)].price,
+				0
+			)
+			setTotalAmount(total)
+			return () => setTotalAmount(0)
 		}
-	}, [cart, fetchData])
+	}, [cart.products, products, productsIndexMap])
 
-	// useEffect(() => {
-	// 	// TODO: calculate total amount when changes are made to cart 
-	// },[])
+	// TODO: 
+	const initiateCheckout = async (event) => {
+		event.preventDefault()
+		const navigateToOrder = ({orderId}) => {
+			setTimeout(() => {
+				history.push(`/orders/${orderId}`)
+			}, 500)
+		}
 
-	const handleQuantityChange = (event, index) => {
-		onUpdate('selectQ', { index, value: event.target.value })
+		await fetchData(
+			{
+				url: `${process.env.REACT_APP_API_URL}/orders/`,
+				method: 'POST',
+				credentials: 'include',
+				headers: { 'Content-Type': 'body/json' }
+			},
+			navigateToOrder
+		)
 	}
 
-	// generate quantity selector and pre-select current value
-	const optionValues = (cartItem) => {
-		let items = []
-		for (let i = 0; i < 100; ++i) {
-			if (i === cartItem.productQuantity) {
-				items.push(<option value={i} selected>{i}</option>)
-			}
-			items.push(<option value={i}>{i}</option>)
-		}
-		return items
-	}
-
-	return (
+	return products.length === 0 && totalAmount === 0 ? (
+		'loading'
+	) : (
 		<div className="bg-white">
 			<div className="max-w-2xl mx-auto pt-16 pb-24 px-4 sm:px-6 lg:max-w-7xl lg:px-8">
 				<h1 className="text-3xl font-extrabold tracking-tight text-gray-900 sm:text-4xl">
 					Shopping Cart
 				</h1>
-				<form className="mt-12 lg:grid lg:grid-cols-12 lg:gap-x-12 lg:items-start xl:gap-x-16">
+				<form
+					onSubmit={initiateCheckout}
+					className="mt-12 lg:grid lg:grid-cols-12 lg:gap-x-12 lg:items-start xl:gap-x-16">
 					<section
 						aria-labelledby="cart-heading"
 						className="lg:col-span-7">
@@ -89,89 +68,18 @@ const Cart = ({ cart, onUpdate }) => {
 
 						<ul className="border-t border-b border-gray-200 divide-y divide-gray-200">
 							{cart.products.map((cartItem, cartItemIdx) => (
-								<li
-									key={cartItem._id}
-									className="flex py-6 sm:py-10">
-									<div className="flex-shrink-0">
-										<img
-											src={
-												cartItem.imageSrc
-													? cartItem.imageSrc
-													: ''
-											}
-											alt={
-												cartItem.imageAlt
-													? cartItem.imageAlt
-													: ''
-											}
-											className="w-24 h-24 rounded-md object-center object-cover sm:w-48 sm:h-48"
-										/>
-									</div>
-
-									<div className="ml-4 flex-1 flex flex-col justify-between sm:ml-6">
-										<div className="relative pr-9 sm:grid sm:grid-cols-2 sm:gap-x-6 sm:pr-0">
-											<div>
-												<div className="flex justify-between">
-													<h3 className="text-sm">
-														<a
-															href={cartItem.href}
-															className="font-medium text-gray-700 hover:text-gray-800">
-															{cartItem.title}
-														</a>
-													</h3>
-												</div>
-												<div className="mt-1 flex text-sm">
-													{cartItem.size ? (
-														<p className=" text-gray-500">
-															Size:{' '}
-															{cartItem.size}
-														</p>
-													) : null}
-												</div>
-												<p className="mt-1 text-sm font-medium text-gray-900">
-													{/* TODO: make product to price mapping */}
-													100
-													{/* {cartItem.productId.price} */}
-												</p>
-											</div>
-
-											<div className="mt-4 sm:mt-0 sm:pr-9">
-												<label
-													htmlFor={`quantity-${cartItemIdx}`}
-													className="sr-only">
-													Quantity,{' '}
-													{cartItem.productQuantity}
-												</label>
-												<select
-													id={`quantity-${cartItemIdx}`}
-													name={`quantity-${cartItemIdx}`}
-													onChange={event =>
-														handleQuantityChange(
-															event,
-															cartItemIdx
-														)
-													}
-													className="max-w-full rounded-md border border-gray-300 py-1.5 text-base leading-5 font-medium text-gray-700 text-left shadow-sm focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
-													{optionValues(cartItem)}
-												</select>
-
-												<div className="absolute top-0 right-0">
-													<button
-														type="button"
-														className="-m-2 p-2 inline-flex text-gray-400 hover:text-gray-500">
-														<span className="sr-only">
-															Remove
-														</span>
-														<XIcon
-															className="h-5 w-5"
-															aria-hidden="true"
-														/>
-													</button>
-												</div>
-											</div>
-										</div>
-									</div>
-								</li>
+								<CartItem
+									key={cartItem.productId + cartItem.size}
+									cartItem={cartItem}
+									cartItemIdx={cartItemIdx}
+									productData={
+										products[
+											productsIndexMap.get(
+												cartItem.productId
+											)
+										]
+									}
+								/>
 							))}
 						</ul>
 					</section>
@@ -185,7 +93,7 @@ const Cart = ({ cart, onUpdate }) => {
 								Order total
 							</dt>
 							<dd className="text-lg font-bold text-gray-900">
-								$112.32
+								€{totalAmount.toFixed(2)}
 							</dd>
 						</div>
 

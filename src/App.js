@@ -5,13 +5,13 @@ import Cart from './Cart'
 import Category from './products/Category'
 import Footer from './Footer'
 import Navigation from './navigation/Navigation'
-import OrderSummary from './order/OrderSummary'
+import OrderConfirmation from './order/checkout/OrderConfirmation'
 import ProductDetails from './products/ProductDetails'
 import Register from './account/Register'
 import ScrollToTop from './ScrollToTop'
 import Signin from './account/Signin'
 import Storefront from './storefront/Storefront'
-import CheckoutForm from './order/CheckoutForm'
+import CheckoutForm from './order/checkout/CheckoutForm'
 
 const App = () => {
 	return (
@@ -23,7 +23,7 @@ const App = () => {
 					<CheckoutForm />
 				</Route>
 				<Route path={'/order/:id'}>
-					<OrderSummary />
+					<OrderConfirmation />
 				</Route>
 				<Route path={'/categories/:id'}>
 					<Category />

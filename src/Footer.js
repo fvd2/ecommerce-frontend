@@ -1,3 +1,5 @@
+import { Link } from "react-router-dom"
+
 const footerNavigation = {
 	brands: [
 		{
@@ -72,11 +74,11 @@ const Footer = () => {
 								<ul className="mt-6 space-y-6">
 									{footerNavigation.brands.map(item => (
 										<li key={item.name} className="text-sm">
-											<a
-												href={item.href}
+											<Link
+												to={item.href}
 												className="text-gray-300 hover:text-white">
 												{item.name}
-											</a>
+											</Link>
 										</li>
 									))}
 								</ul>

@@ -15,7 +15,7 @@ const CartContextProvider = ({ children }) => {
 	const cartValues = {
 		cart,
 		dispatch,
-		cartSize: cart.products.length,
+		cartSize: cart.cartSize,
 		onCartUpdate: handleCartUpdate
 	}
 

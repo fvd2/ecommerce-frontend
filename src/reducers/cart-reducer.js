@@ -10,12 +10,14 @@ const CartReducer = (state, action) => {
 		})
 	}
 	let updatedState
+
 	switch (action.type) {
 		// if available: populate cart with data from db
 		case 'init':
 			updatedState = update(state, {
 				$set: action.payload
 			})
+
 			return updatedState
 		case 'add':
 			// if product and size not in cart: add, else: increment
@@ -53,6 +55,7 @@ const CartReducer = (state, action) => {
 					}
 				})
 			}
+			console.log(updatedState)
 			postToDb(updatedState)
 			return updatedState
 		case 'delete':

@@ -109,11 +109,12 @@ const classNames = (...classes) => {
 
 const Navigation = () => {
 	const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+	const [cartSize, setCartSize] = useState(false)
 	const mountedRef = useRef(true)
 	const { user, accessToken, updateAccessToken, updateUser } =
 		useContext(UserContext)
-	const { dispatch, cartSize } = useContext(CartContext)
-	const { products, productsIndexMap, updateProducts } =
+	const { cart, dispatch } = useContext(CartContext)
+	const { products, updateProducts } =
 		useContext(ProductContext)
 	const { loading, error, fetchData } = useHttp()
 	const history = useHistory()
@@ -158,7 +159,9 @@ const Navigation = () => {
 	useEffect(() => {
 		const fetchProducts = async () => {
 			await fetchData(
-				{ url: `${process.env.REACT_APP_API_URL}/products/` },
+				{
+					url: `${process.env.REACT_APP_API_URL}/products/`,
+				},
 				updateProducts
 			)
 		}
@@ -213,6 +216,21 @@ const Navigation = () => {
 			console.error(`Failed to log user out ${err}`)
 		}
 	}
+
+	// calculate number of cart items 
+	useEffect(() => {
+		if (cart.products.length !== 0) {
+			const total = cart.products.reduce(
+				(prev, curr) =>
+					prev +
+					curr.productQuantity,
+				0
+			)
+			setCartSize(total)
+			return () => setCartSize(0)
+		}
+	}, [cart.products, products])
+
 
 	const openMobileMenu = () => {
 		setMobileMenuOpen(true)

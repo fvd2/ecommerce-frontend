@@ -80,7 +80,7 @@ const CartItem = ({ cartItemIdx, productData, cartItem }) => {
 						<p className="mt-1 text-sm font-medium text-gray-900">
 							€
 							{
-								productData.price
+								productData.price.toFixed(2)
 							}
 						</p>
 					</div>

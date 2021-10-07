@@ -18,6 +18,12 @@ const NavigationBar = ({
 					<p>
 						this is a fake webshop - credits:{' '}
 						<a
+							href="https://tailwindui.com"
+							target="_blank"
+							rel="noreferrer">
+							ui
+						</a>,{' '}
+						<a
 							href="https://unsplash.com/@bonvoyagepictures"
 							target="_blank"
 							rel="noreferrer">
@@ -120,8 +126,8 @@ const NavigationBar = ({
 																									className="object-center object-cover"
 																								/>
 																							</div>
-																							<a
-																								href={
+																							<Link
+																								to={
 																									item.href
 																								}
 																								className="mt-6 block font-medium text-gray-900">
@@ -132,7 +138,7 @@ const NavigationBar = ({
 																								{
 																									item.name
 																								}
-																							</a>
+																							</Link>
 																							<div
 																								aria-hidden="true"
 																								className="mt-1 flex-column align-middle">
@@ -176,15 +182,16 @@ const NavigationBar = ({
 																											item.name
 																										}
 																										className="flex">
-																										<a
-																											href={
+																										<Link
+																											to={
 																												item.href
 																											}
 																											className="hover:text-gray-800">
 																											{
 																												item.name
 																											}
-																										</a>
+																											onClick={}
+																										</Link>
 																									</li>
 																								)
 																							)}

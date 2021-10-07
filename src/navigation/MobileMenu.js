@@ -3,8 +3,15 @@ import { Dialog, Tab, Transition } from '@headlessui/react'
 import { XIcon } from '@heroicons/react/outline'
 import { Link } from 'react-router-dom'
 
-const MobileMenu = ({ user, onSignOut, isOpen, onOpen, onClose, classNames, navigation }) => {
-
+const MobileMenu = ({
+	user,
+	onSignOut,
+	isOpen,
+	onOpen,
+	onClose,
+	classNames,
+	navigation
+}) => {
 	return (
 		<>
 			{/* Mobile menu */}
@@ -88,15 +95,18 @@ const MobileMenu = ({ user, onSignOut, isOpen, onOpen, onClose, classNames, navi
 																		item.name
 																	}
 																	className="flow-root">
-																	<a
-																		href={
+																	<Link
+																		to={
 																			item.href
+																		}
+																		onClick={
+																			onClose
 																		}
 																		className="-m-2 p-2 block text-gray-500">
 																		{
 																			item.name
 																		}
-																	</a>
+																	</Link>
 																</li>
 															)
 														)}
@@ -112,6 +122,7 @@ const MobileMenu = ({ user, onSignOut, isOpen, onOpen, onClose, classNames, navi
 									<div className="flow-root">
 										<Link
 											to="/account/signin"
+											onClick={onClose}
 											className="-m-2 p-2 block font-medium text-gray-900">
 											Sign in
 										</Link>
@@ -119,6 +130,7 @@ const MobileMenu = ({ user, onSignOut, isOpen, onOpen, onClose, classNames, navi
 									<div className="flow-root">
 										<Link
 											to="/account/register"
+											onClick={onClose}
 											className="-m-2 p-2 block font-medium text-gray-900">
 											Create account
 										</Link>

@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom'
 
-const OrderSummary = ({ order, vatAmount }) => {
+const OrderSummary = ({ order, vatAmount, errors }) => {
 	return (
 		<div className="grid col-start-2 row-start-2 col-span-1 mt-10 border-t border-gray-200 pt-10">
 			<div>
@@ -13,7 +13,7 @@ const OrderSummary = ({ order, vatAmount }) => {
 					<ul className="divide-y divide-gray-200">
 						{order.products.map(item => (
 							<li
-								key={item.productId}
+								key={item.productId + item.size}
 								className="flex py-6 px-4 sm:px-6">
 								<div className="flex-shrink-0">
 									<img
@@ -81,7 +81,12 @@ const OrderSummary = ({ order, vatAmount }) => {
 					<div className="border-t border-gray-200 py-6 px-4 sm:px-6">
 						<button
 							type="submit"
-							className="w-full bg-indigo-600 border border-transparent rounded-md shadow-sm py-3 px-4 text-base font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-50 focus:ring-indigo-500">
+							disabled={Object.keys(errors).length > 0}
+							className={
+								Object.keys(errors).length > 0
+									? 'w-full col-span-2 bg-indigo-600 disabled:opacity-30 cursor-not-allowed border border-transparent rounded-md shadow-sm py-3 px-4 text-base font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-50 focus:ring-indigo-500'
+									: 'w-full col-span-2 bg-indigo-600 border border-transparent rounded-md shadow-sm py-3 px-4 text-base font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-50 focus:ring-indigo-500'
+							}>
 							Pay order
 						</button>
 					</div>

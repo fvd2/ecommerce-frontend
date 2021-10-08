@@ -114,8 +114,7 @@ const Navigation = () => {
 	const { user, accessToken, updateAccessToken, updateUser } =
 		useContext(UserContext)
 	const { cart, dispatch } = useContext(CartContext)
-	const { products, updateProducts } =
-		useContext(ProductContext)
+	const { products, updateProducts } = useContext(ProductContext)
 	const { loading, error, fetchData } = useHttp()
 	const history = useHistory()
 
@@ -160,7 +159,7 @@ const Navigation = () => {
 		const fetchProducts = async () => {
 			await fetchData(
 				{
-					url: `${process.env.REACT_APP_API_URL}/products/`,
+					url: `${process.env.REACT_APP_API_URL}/products/`
 				},
 				updateProducts
 			)
@@ -217,20 +216,17 @@ const Navigation = () => {
 		}
 	}
 
-	// calculate number of cart items 
+	// calculate number of cart items
 	useEffect(() => {
-		if (cart.products.length !== 0) {
+		if (cart.products && cart.products.length !== 0) {
 			const total = cart.products.reduce(
-				(prev, curr) =>
-					prev +
-					curr.productQuantity,
+				(prev, curr) => prev + curr.productQuantity,
 				0
 			)
 			setCartSize(total)
 			return () => setCartSize(0)
 		}
 	}, [cart.products, products])
-
 
 	const openMobileMenu = () => {
 		setMobileMenuOpen(true)

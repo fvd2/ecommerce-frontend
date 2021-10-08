@@ -119,13 +119,13 @@ const Cart = () => {
 							</div>
 						</section>
 					) : (
-									<div className="flex-column justify-between">
-										<h2 className="text-xl mt-10 mb-1">
-											<span className="font-medium text-gray-700 hover:text-gray-800">
-												There are currently no items in your cart.
-											</span>
-										</h2>
-									</div>
+						<div className="col-start-1 col-span-10 flex-column justify-between">
+							<h2 className="text-xl mt-10 mb-1">
+								<span className="font-medium text-gray-700 hover:text-gray-800">
+									There are currently no items in your cart.
+								</span>
+							</h2>
+						</div>
 					)}
 				</form>
 			</div>

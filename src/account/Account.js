@@ -17,59 +17,80 @@ const Account = () => {
 			billingAddress: { givenName, familyName, ...otherData },
 			shippingAddress: { givenName, familyName, ...otherData }
 		}
-		await fetchData(
-			{
-				url: `${process.env.REACT_APP_API_URL}/users/update`,
-				method: 'POST',
-				credentials: 'include',
-				headers: {
-					'Content-Type': 'application/json',
-					authorization: 'Bearer ' + accessToken
-				},
-				body: JSON.stringify(updateObj)
+		await fetchData({
+			url: `${process.env.REACT_APP_API_URL}/users/update`,
+			method: 'POST',
+			credentials: 'include',
+			headers: {
+				'Content-Type': 'application/json',
+				authorization: 'Bearer ' + accessToken
 			},
-			(output) => {console.log(output)}
-		)
+			body: JSON.stringify(updateObj)
+		})
 	}
 
+	console.log(user)
+
 	return (
-		user && user.email && (
+		user &&
+		user.email && (
 			<>
 				<div className="bg-gray-50">
 					<div className="max-w-2xl mx-auto pt-16 pb-24 px-4 sm:px-6 lg:max-w-7xl lg:px-8">
 						<h2 className="sr-only">Checkout</h2>
 						<Formik
-                        // change to actual values!! see user object
 							initialValues={{
 								email: user.email ? user.email : '',
-								phone: user.shippingAddress.phone ? user.shippingAddress.phone : '',
-								givenName: user.shippingAddress.givenName ? user.shippingAddress.givenName: '',
-								familyName: user.shippingAddress.familyName ? user.shippingAddress.familyName : '',
-								streetAndNumber: user.shippingAddress.streetAndNumber
-									? user.shippingAddress.streetAndNumber
-									: '',
-								streetAdditional: user.shippingAddress.streetAdditional
-									? user.shippingAddress.streetAdditional
-									: '',
-								postalCode: user.shippingAddress.postalCode
-									? user.shippingAddress.postalCode
-									: '',
-								city: user.shippingAddress.city ? user.shippingAddress.city : '',
-								country: user.shippingAddress.country ? user.shippingAddress.country : 'NL'
+								givenName:
+									user.shippingAddress &&
+									user.shippingAddress.givenName
+										? user.shippingAddress.givenName
+										: '',
+								familyName:
+									user.shippingAddress &&
+									user.shippingAddress.familyName
+										? user.shippingAddress.familyName
+										: '',
+								streetAndNumber:
+									user.shippingAddress &&
+									user.shippingAddress.streetAndNumber
+										? user.shippingAddress.streetAndNumber
+										: '',
+								streetAdditional:
+									user.shippingAddress &&
+									user.shippingAddress.streetAdditional
+										? user.shippingAddress.streetAdditional
+										: '',
+								postalCode:
+									user.shippingAddress &&
+									user.shippingAddress.postalCode
+										? user.shippingAddress.postalCode
+										: '',
+								city:
+									user.shippingAddress &&
+									user.shippingAddress.city
+										? user.shippingAddress.city
+										: '',
+								country:
+									user.shippingAddress &&
+									user.shippingAddress.country
+										? user.shippingAddress.country
+										: 'NL',
+								phone:
+									user.shippingAddress &&
+									user.shippingAddress.phone
+										? user.shippingAddress.phone
+										: ''
 							}}
-
+							// TODO: add additional validation
 							validate={values => {
 								const errors = {}
 								if (!values.phone) {
 									errors.city = 'Required'
 								}
-								if (
-									!/[A-Za-z0-9]+@[A-Za-z0-9]{2,}\.[A-Za-z]{2,}/i.test(
-										values.email
-									)
-								) {
-									errors.email =
-										'Please enter a valid e-mail address'
+								if (!/^\+?[1-9]\d{5,14}$/i.test(values.phone)) {
+									errors.phone =
+										'Please enter your phone number including country code (e.g. +31 6 1111 1111)'
 								}
 								if (!values.givenName) {
 									errors.givenName = 'Required'
@@ -89,10 +110,10 @@ const Account = () => {
 								if (!values.country) {
 									errors.country = 'Required'
 								}
+								return errors
 							}}
 							onSubmit={(values, { setSubmitting }) => {
-								console.log(values)
-                                handleSettingsUpdate(values)
+								handleSettingsUpdate(values)
 								setSubmitting(false)
 							}}>
 							{({ values, errors, handleSubmit }) => (
@@ -127,6 +148,14 @@ const Account = () => {
 																className="block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
 															/>
 														</div>
+														<span
+															className={`pt-2 block text-xs font-medium ${
+																errors.givenName
+																	? 'text-red-700'
+																	: 'text-gray-700'
+															}`}>
+															{errors.givenName}
+														</span>
 													</div>
 												)}
 											</Field>
@@ -153,6 +182,14 @@ const Account = () => {
 																className="block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
 															/>
 														</div>
+														<span
+															className={`pt-2 block text-xs font-medium ${
+																errors.familyName
+																	? 'text-red-700'
+																	: 'text-gray-700'
+															}`}>
+															{errors.familyName}
+														</span>
 													</div>
 												)}
 											</Field>
@@ -180,6 +217,16 @@ const Account = () => {
 																className="block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
 															/>
 														</div>
+														<span
+															className={`pt-2 block text-xs font-medium ${
+																errors.streetAndNumber
+																	? 'text-red-700'
+																	: 'text-gray-700'
+															}`}>
+															{
+																errors.streetAndNumber
+															}
+														</span>
 													</div>
 												)}
 											</Field>
@@ -205,6 +252,16 @@ const Account = () => {
 																className="block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
 															/>
 														</div>
+														<span
+															className={`pt-2 block text-xs font-medium ${
+																errors.streetAdditional
+																	? 'text-red-700'
+																	: 'text-gray-700'
+															}`}>
+															{
+																errors.streetAdditional
+															}
+														</span>
 													</div>
 												)}
 											</Field>
@@ -231,6 +288,14 @@ const Account = () => {
 																className="block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
 															/>
 														</div>
+														<span
+															className={`pt-2 block text-xs font-medium ${
+																errors.postalCode
+																	? 'text-red-700'
+																	: 'text-gray-700'
+															}`}>
+															{errors.postalCode}
+														</span>
 													</div>
 												)}
 											</Field>
@@ -256,6 +321,14 @@ const Account = () => {
 																className="block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
 															/>
 														</div>
+														<span
+															className={`pt-2 block text-xs font-medium ${
+																errors.city
+																	? 'text-red-700'
+																	: 'text-gray-700'
+															}`}>
+															{errors.city}
+														</span>
 													</div>
 												)}
 											</Field>
@@ -310,12 +383,29 @@ const Account = () => {
 																className="block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
 															/>
 														</div>
+														<span
+															className={`pt-2 block text-xs font-medium ${
+																errors.phone
+																	? 'text-red-700'
+																	: 'text-gray-700'
+															}`}>
+															{errors.phone}
+														</span>
 													</div>
 												)}
 											</Field>
 											<button
 												type="submit"
-												className="w-full col-span-2 bg-indigo-600 border border-transparent rounded-md shadow-sm py-3 px-4 text-base font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-50 focus:ring-indigo-500">
+												disabled={
+													Object.keys(errors).length >
+													0
+												}
+												className={Object.keys(errors).length >
+													0 ? 
+													'w-full col-span-2 bg-indigo-600 disabled:opacity-30 cursor-not-allowed border border-transparent rounded-md shadow-sm py-3 px-4 text-base font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-50 focus:ring-indigo-500' :
+													'w-full col-span-2 bg-indigo-600 border border-transparent rounded-md shadow-sm py-3 px-4 text-base font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-50 focus:ring-indigo-500'
+												
+												}>
 												Update contact information
 											</button>
 										</div>

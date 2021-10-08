@@ -31,7 +31,7 @@ const Cart = () => {
 
 	const initiateCheckout = async event => {
 		event.preventDefault()
-		const navigateToOrder = response => {
+		const navigateToOrder = async response => {
 			let url
 			const orderId = response.orderId
 			setTimeout(() => {

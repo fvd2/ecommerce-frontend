@@ -115,7 +115,7 @@ const Navigation = () => {
 		useContext(UserContext)
 	const { cart, dispatch } = useContext(CartContext)
 	const { products, updateProducts } = useContext(ProductContext)
-	const { loading, error, fetchData } = useHttp()
+	const { fetchData } = useHttp()
 	const history = useHistory()
 
 	// load user data

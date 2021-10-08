@@ -10,7 +10,7 @@ const classNames = (...classes) => {
 }
 
 const ProductDetails = () => {
-	const { loading, error, fetchData } = useHttp()
+	const { fetchData } = useHttp()
 	const [product, setProduct] = useState({
 		id: '',
 		brand: '',

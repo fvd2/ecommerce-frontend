@@ -11,7 +11,7 @@ const Cart = () => {
 	const { products, productsIndexMap } = useContext(ProductContext)
 	const { cart } = useContext(CartContext)
 	const { accessToken } = useContext(UserContext)
-	const { loading, error, fetchData } = useHttp()
+	const { fetchData } = useHttp()
 	const history = useHistory()
 
 	useEffect(() => {

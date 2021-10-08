@@ -1,11 +1,10 @@
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import useHttp from '../hooks/useHttp'
-import { useParams } from 'react-router'
 
 const AllProducts = () => {
 	const [allProducts, setAllProducts] = useState([])
-	const { loading, error, fetchData } = useHttp()
+	const { fetchData } = useHttp()
 
 	useEffect(() => {
 		const handleProductData = async productData => {

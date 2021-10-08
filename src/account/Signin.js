@@ -8,7 +8,7 @@ import { Formik, Form, Field } from 'formik'
 const Signin = () => {
 	const userCtx = useContext(UserContext)
 	const history = useHistory()
-	const { loading, error, fetchData } = useHttp()
+	const { fetchData } = useHttp()
 
 	const handleSignIn = async (email, password) => {
 		try {

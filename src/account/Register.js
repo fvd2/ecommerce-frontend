@@ -1,14 +1,11 @@
-import { useContext } from 'react'
 import useHttp from '../hooks/useHttp'
-import { UserContext } from '../context/user-context'
 import { useHistory } from 'react-router'
 
 import { Formik, Form, Field } from 'formik'
 
 const Signin = () => {
-	const userCtx = useContext(UserContext)
 	const history = useHistory()
-	const { loading, error, fetchData } = useHttp()
+	const { fetchData } = useHttp()
 
 	const handleNewAccount = async (email, password) => {
 		try {

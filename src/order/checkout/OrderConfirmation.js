@@ -5,7 +5,7 @@ import { Link } from 'react-router-dom'
 
 const OrderConfirmation = () => {
 	const [order, setOrder] = useState()
-	const { loading, error, fetchData } = useHttp()
+	const { loading, fetchData } = useHttp()
 	const params = useParams()
 
 	// load order data

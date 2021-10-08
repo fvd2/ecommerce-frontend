@@ -5,7 +5,7 @@ import useHttp from '../hooks/useHttp'
 
 const Account = () => {
 	const { user, accessToken } = useContext(UserContext)
-	const { loading, error, fetchData } = useHttp()
+	const { fetchData } = useHttp()
 
 	const handleSettingsUpdate = async userData => {
 		const {

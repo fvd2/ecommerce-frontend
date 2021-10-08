@@ -6,7 +6,7 @@ import useHttp from '../hooks/useHttp'
 const Category = () => {
 	const [productsInCategory, setProductsInCategory] = useState([])
 	const params = useParams()
-	const { loading, error, fetchData } = useHttp()
+	const { fetchData } = useHttp()
 
 	useEffect(() => {
 		const handleProductData = async productData => {

@@ -32,7 +32,7 @@ const CheckoutForm = () => {
 	)
 	const [order, setOrder] = useState('')
 	const [vatAmount, setVatAmount] = useState(0)
-	const { loading, error, fetchData } = useHttp()
+	const { fetchData } = useHttp()
 	const params = useParams()
 	const history = useHistory()
 	const { user } = useContext(UserContext)

@@ -12,7 +12,7 @@ ReactDOM.render(
 		<UserContextProvider>
 			<ProductContextProvider>
 				<CartContextProvider>
-					<Router>
+					<Router basename={'/ecom'}>
 						<App />
 					</Router>
 				</CartContextProvider>

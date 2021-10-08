@@ -1,4 +1,5 @@
 import { useContext } from 'react'
+import useHttp from '../hooks/useHttp'
 import { UserContext } from '../context/user-context'
 import { useHistory } from 'react-router'
 
@@ -7,19 +8,35 @@ import { Formik, Form, Field } from 'formik'
 const Signin = () => {
 	const userCtx = useContext(UserContext)
 	const history = useHistory()
+	const { loading, error, fetchData } = useHttp()
 
+	const handleNewAccount = async (email, password) => {
+		try {
+			await fetchData(
+				{
+					url: `${process.env.REACT_APP_API_URL}/auth/register`,
+					method: 'POST',
+					body: JSON.stringify({
+						email,
+						password
+					}),
+					headers: {
+						'Content-Type': 'application/json'
+					}
+				}
+			)
+		} catch (err) {
+			console.error(
+				`An error occurred when registering a new user: ${err}`
+			)
+		}
+	}
 
 	return (
 		<div className="min-h-screen bg-gray-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
-            ADJUST TO REGISTER PAGE
 			<div className="sm:mx-auto sm:w-full sm:max-w-md">
-				<img
-					className="mx-auto h-12 w-auto"
-					src="https://tailwindui.com/img/logos/workflow-mark-indigo-600.svg"
-					alt="Workflow"
-				/>
 				<h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
-					Sign in to your account
+					Register your account
 				</h2>
 			</div>
 
@@ -43,27 +60,17 @@ const Signin = () => {
 								errors.email =
 									'Please enter a valid e-mail address'
 							}
-							if (
-								!values.password ||
-								values.password.length < 8
-							) {
-								errors.password =
-									'Password is empty or less than 8 characters'
-							}
 							return errors
 						}}
 						onSubmit={(values, { setSubmitting }) => {
-							userCtx.handleSignIn(values.email, values.password)
+							handleNewAccount(values.email, values.password)
 							setSubmitting(false)
 							setTimeout(() => {
-								history.push('/')
+								history.push('/account/signin')
 							}, 500)
 						}}>
-						{({
-							values,
-							handleSubmit,
-						}) => (
-							<form className="space-y-6" onSubmit={handleSubmit}>
+						{({ values, handleSubmit }) => (
+							<Form className="space-y-6" onSubmit={handleSubmit}>
 								<Field>
 									{({ field }) => (
 										<div>
@@ -118,7 +125,7 @@ const Signin = () => {
 										Sign in
 									</button>
 								</div>
-							</form>
+							</Form>
 						)}
 					</Formik>
 				</div>

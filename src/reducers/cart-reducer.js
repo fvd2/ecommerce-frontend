@@ -55,7 +55,6 @@ const CartReducer = (state, action) => {
 					}
 				})
 			}
-			console.log(updatedState)
 			postToDb(updatedState)
 			return updatedState
 		case 'delete':

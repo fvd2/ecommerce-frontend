@@ -165,8 +165,6 @@ const CheckoutForm = () => {
 						}
 					}}
 					onSubmit={(values, { setSubmitting }) => {
-						console.log(values)
-
 						handleOrderUpdate(values)
 						setSubmitting(false)
 					}}>

@@ -134,7 +134,7 @@ const Navigation = () => {
 							updateAccessToken
 						)
 					} else {
-						updateUser({ email: data.email })
+						updateUser(data)
 					}
 				} else {
 					updateUser({ email: null })

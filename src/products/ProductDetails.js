@@ -25,8 +25,7 @@ const ProductDetails = () => {
 	const { onCartUpdate: onAddToCart } = useContext(CartContext)
 	const params = useParams()
 	const history = useHistory()
-	const mountRef = useRef()
-	
+
 	const handleAddProduct = event => {
 		event.preventDefault()
 		if (selectedSize) {
@@ -55,13 +54,15 @@ const ProductDetails = () => {
 		getProduct()
 	}, [params.id, fetchData])
 
-	useEffect(() => {
-
-
-		return () => mountRef.current = false
-	}, [])
-
-	return (
+	return product.images.length === 0 ? (
+		<div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex justify-center">
+			<h2 className="text-md mt-10 mb-10">
+				<span className="font-medium text-gray-700 hover:text-gray-800">
+					There appears to be no product associated with this ID. 
+				</span>
+			</h2>
+		</div>
+	) : (
 		<div className="bg-white">
 			<div className="max-w-2xl mx-auto py-16 px-4 sm:py-24 sm:px-6 lg:max-w-7xl lg:px-8">
 				<div className="lg:grid lg:grid-cols-2 lg:gap-x-8 lg:items-start">

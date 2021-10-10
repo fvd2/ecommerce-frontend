@@ -12,6 +12,7 @@ import ScrollToTop from './ScrollToTop'
 import Signin from './account/Signin'
 import Storefront from './storefront/Storefront'
 import CheckoutForm from './order/checkout/CheckoutForm'
+import PageNotFound from './PageNotFound'
 
 const App = () => {
 	return (
@@ -34,20 +35,23 @@ const App = () => {
 				<Route path={'/products'}>
 					<AllProducts />
 				</Route>
-				<Route path="/account/signin">
+				<Route path={'/account/signin'}>
 					<Signin />
 				</Route>
-				<Route path="/account/register">
+				<Route path={'/account/register'}>
 					<Register />
 				</Route>
-				<Route path="/account/">
+				<Route path={'/account/'}>
 					<Account />
 				</Route>
-				<Route path="/cart">
+				<Route path={'/cart'}>
 					<Cart />
 				</Route>
 				<Route exact path="/">
 					<Storefront />
+				</Route>
+				<Route path={['*', '/404']}>
+					<PageNotFound />
 				</Route>
 			</Switch>
 			<Footer />

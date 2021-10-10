@@ -37,6 +37,13 @@ const NavigationBar = ({
 							rel="noreferrer">
 							racket data
 						</a>
+						,{' '}
+						<a
+							href="https://www.flaticon.com/premium-icon/tennis_2955205?term=tennis%20racket&page=1&position=1&page=1&position=1&related_id=2955205&origin=tag"
+							target="_blank"
+							rel="noreferrer">
+							icon
+						</a>
 					</p>
 				</div>
 

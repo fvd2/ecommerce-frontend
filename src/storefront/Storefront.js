@@ -31,7 +31,7 @@ const perks = [
 	}
 ]
 
-const Storefront = () => {
+const Storefront = ({ initialLoadRef }) => {
 	const trendingRackets = [
 		{
 			_id: '615c13d540b9d83fa691eb42',
@@ -69,6 +69,7 @@ const Storefront = () => {
 
 	return (
 		<main>
+
 			{/* Hero */}
 			<div className="flex flex-col border-b border-gray-200 lg:border-0">
 				<div className="relative">

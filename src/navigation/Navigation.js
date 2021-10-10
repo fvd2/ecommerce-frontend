@@ -3,6 +3,7 @@ import useHttp from '../hooks/useHttp'
 import { UserContext } from '../context/user-context'
 import { CartContext } from '../context/cart-context'
 import { ProductContext } from '../context/product-context'
+import Dialog from '../ui/Dialog'
 import MobileMenu from './MobileMenu'
 import NavigationBar from './NavigationBar'
 import { useHistory } from 'react-router-dom'
@@ -110,6 +111,7 @@ const classNames = (...classes) => {
 const Navigation = () => {
 	const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
 	const [cartSize, setCartSize] = useState(false)
+	const [dialogIsOpen, setDialogIsOpen] = useState(false)
 	const mountedRef = useRef(true)
 	const { user, accessToken, updateAccessToken, updateUser } =
 		useContext(UserContext)
@@ -117,6 +119,16 @@ const Navigation = () => {
 	const { products, updateProducts } = useContext(ProductContext)
 	const { fetchData } = useHttp()
 	const history = useHistory()
+
+	// show dialog only once by storing the response in session storage
+	useEffect(() => {
+		console.log(sessionStorage.getItem('hallo'))
+		if (!sessionStorage.getItem('ecom-dialog-seen'))
+			setTimeout(() => {
+				setDialogIsOpen(true)
+				sessionStorage.setItem('ecom-dialog-seen', 'true')
+			}, 3000)
+	}, [])
 
 	// load user data
 	useEffect(() => {
@@ -238,6 +250,18 @@ const Navigation = () => {
 
 	return (
 		<div className="bg-white">
+			{dialogIsOpen && (
+				<Dialog
+					isOpen={dialogIsOpen}
+					title={
+						'Welcome! This fake webshop is for demonstration purposes only.'
+					}
+					description={
+						'Feel free to try it out: Optionally register an account and sign-in, select one or more tennis rackets, and pretend to pay for your order using the Mollie test API.'
+					}
+					setIsOpen={setDialogIsOpen}
+				/>
+			)}
 			<MobileMenu
 				user={user}
 				onSignOut={handleSignOut}

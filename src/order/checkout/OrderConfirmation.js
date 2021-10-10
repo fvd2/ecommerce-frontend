@@ -61,7 +61,7 @@ const OrderConfirmation = () => {
 	return (
 		<>
 			{loading && '...loading'}
-			{order && (
+			{order ? (
 				<div className="bg-white">
 					<div className="max-w-3xl mx-auto px-4 py-16 sm:px-6 sm:py-24 lg:px-8">
 						<div className="max-w-xl">
@@ -209,8 +209,16 @@ const OrderConfirmation = () => {
 						</div>
 					</div>
 				</div>
+			) : (
+				<div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex justify-center">
+					<h2 className="text-md mt-10 mb-10">
+						<span className="font-medium text-gray-700 hover:text-gray-800">
+							There appears to be no order associated with this ID. If you believe this is incorrect, please contact our helpdesk at +31 20 11 11 11 11 or helpdesk@thisisafakewebshop.com
+						</span>
+					</h2>
+				</div>
 			)}
-		</>
+		</> 
 	)
 }
 

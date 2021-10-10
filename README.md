@@ -5,10 +5,10 @@ Front-end for an e-commerce MVP. For practice and demonstration purposes only.
 [backend repo](https://github.com/fvd2/ecommerce-backend).
 
 ## Credits
-UI components: [Tailwind UI](https://tailwindui.com)
-Hero image: [Julian Schiemann/unsplash](https://unsplash.com/@bonvoyagepictures)
-Product data and images: [Tennis-Point](https://www.tennis-point.nl)
-Manifest icon: [Flaticon](https://www.flaticon.com/premium-icon/tennis_2955205?term=tennis%20racket&page=1&position=1&page=1&position=1&related_id=2955205&origin=tag)  
+* UI components: [Tailwind UI](https://tailwindui.com)
+* Hero image: [Julian Schiemann/unsplash](https://unsplash.com/@bonvoyagepictures)
+* Product data and images: [Tennis-Point](https://www.tennis-point.nl)
+* Manifest icon: [Flaticon](https://www.flaticon.com/premium-icon/tennis_2955205?term=tennis%20racket&page=1&position=1&page=1&position=1&related_id=2955205&origin=tag)  
 
 ## Functionality
 * User management: create account, sign in and change account information

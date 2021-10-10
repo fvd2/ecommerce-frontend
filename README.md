@@ -1,8 +1,8 @@
 # ecommerce frontend
 Front-end for an e-commerce MVP. For practice and demonstration purposes only. 
 
-[Live app](https://freekvandam.nl/ecom) 
-[Backend repo](https://github.com/fvd2/ecommerce-backend).
+[live app](https://freekvandam.nl/ecom) - 
+[backend repo](https://github.com/fvd2/ecommerce-backend).
 
 ## Credits
 UI components: [Tailwind UI](https://tailwindui.com)

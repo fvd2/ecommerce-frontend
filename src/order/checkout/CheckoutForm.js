@@ -161,7 +161,7 @@ const CheckoutForm = () => {
 							errors.email = 'Required'
 						}
 						if (!values.phone) {
-							errors.city = 'Required'
+							errors.phone = 'Required'
 						}
 						if (
 							!/^\+?[1-9]\d{5,14}$/i.test(
